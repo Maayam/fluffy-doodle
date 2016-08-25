@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div id="wrapper" class="container-fluid">
+	<section id="userInterface" class="">
+		<nav class="row navbar">
+			
+		</nav>
+		<section class="row">
+			
+		</section>
+	</section>
+	<section id="userMap" class="">
+		
+	</section>
+</div>
+{% endblock %}
+
+{% block head %}
+	{{ parent() }}
+	{# CSS #}
+	<link rel="stylesheet" type="text/css" href="{{ asset('css/map.css') }}">
+
+	{# LEAFLET #}
+	<link rel="stylesheet" href="https://npmcdn.com/leaflet@0.7.7/dist/leaflet.css" />
+	<script src="https://npmcdn.com/leaflet@0.7.7/dist/leaflet.js"></script>
+{% endblock %}
+
+{% block footerScripts %}
+
+{% endblock %}

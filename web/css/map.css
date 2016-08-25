@@ -1,0 +1,31 @@
+#wrapper{
+	height:100%;
+	margin:0;
+	padding:0;
+}
+
+#userInterface{
+	position:absolute;
+	top:0;
+	right:0;
+	bottom:0;
+	left:0;
+	z-index:2;
+}
+
+#userMap{
+	position:absolute;
+	top:0;
+	right:0;
+	bottom:0;
+	left:0;
+	z-index:1;
+}
+
+.navbar{
+	margin:0;
+}
+
+.slider{
+
+}
