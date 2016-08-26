@@ -6,6 +6,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use AppBundle\Entity\Plot;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class PlotController extends Controller
 {
@@ -33,7 +34,7 @@ class PlotController extends Controller
 	{
 	    $plot = $this->getDoctrine()
 	        ->getRepository('AppBundle:Plot')
-	        ->find();
+	        ->find($plotId);
 
 	    if (!$plot) {
 	        throw $this->createNotFoundException(
@@ -66,4 +67,36 @@ class PlotController extends Controller
 
 	    return $this->render('default/addPlot.html.twig', ['plot' => $plot]);
 	}
+
+	/**
+	 *@Route("/findInView", name="findInViewPage")
+	 */
+	public function ajax_findInViewAction(Request $request){
+		$bounds = [
+			"minLat" => $request->query->get('minLat'),
+			"minLng" => $request->query->get('minLng'),
+			"maxLat" => $request->query->get('maxLat'),
+			"maxLng" => $request->query->get('maxLng')
+		];
+
+		$em = $this->getDoctrine()->getManager();
+		$query = $em->createQuery(
+		    'SELECT plot.lat, plot.lng, plot.name, plot.note
+		    FROM AppBundle\Entity\Plot plot
+		    WHERE plot.lat > :minLat
+		    AND plot.lat < :maxLat
+		    AND plot.lng > :minLng
+		    AND plot.lng < :maxLng'
+		)->setParameters(array(
+			'minLat' => $bounds['minLat'],
+			'minLng' => $bounds['minLng'],
+			'maxLat' => $bounds['maxLat'],
+			'maxLng' => $bounds['maxLng']
+		));
+
+		$plots = $query->getResult();
+
+		return new JsonResponse($plots);
+	}
+
 }
