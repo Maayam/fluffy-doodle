@@ -1,0 +1,15 @@
+<h1>Plots index</h1>
+<table>
+	<tr>
+		<th>id</th>
+		<th>Lat</th>
+		<th>Lng</th>
+	</tr>
+	{% for p in plots %}
+		<tr>
+			<th>{{ p.id }}</th>
+			<th>{{ p.lat }}</th>
+			<th>{{ p.lng }}</th>
+		</tr>
+	{% endfor %}
+</table>

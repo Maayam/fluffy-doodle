@@ -3,6 +3,8 @@ var ajaxRequest;
 var plotlist;
 var plotlayers=[];
 
+var home = new L.LatLng(47.200549, -1.544480);
+
 function initmap() { //loads the map
 	// set up the map
 	map = new L.Map('userMap');
@@ -13,7 +15,7 @@ function initmap() { //loads the map
 	var osm = new L.TileLayer(osmUrl, {minZoom: 4, maxZoom: 19, attribution: osmAttrib});		
 
 	// start the map in South-East England
-	map.setView(new L.LatLng(51.3, 0.7),9);
+	map.setView(home ,12);
 	map.addLayer(osm);
 }
 
