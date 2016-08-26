@@ -23,7 +23,6 @@ class Plot
 	private $lat;
 
 	/** @ORM\Column(type="decimal", precision=10, scale=6)
-	 * @ORM\lng
 	 */
 	private $lng;
 
