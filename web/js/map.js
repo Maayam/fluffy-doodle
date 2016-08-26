@@ -7,8 +7,6 @@ var ajaxRequest;
 var plotlist;
 var plotlayers=[];
 
-var ajaxRequest = getXmlHttpObject();
-
 var home = new L.LatLng(47.200549, -1.544480);
 
 function initmap() { //loads the map
@@ -18,7 +16,7 @@ function initmap() { //loads the map
 	// create the tile layer with correct attribution
 	var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 	var osmAttrib='Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
-	var osm = new L.TileLayer(osmUrl, {minZoom: 4, maxZoom: 19, attribution: osmAttrib});		
+	var osm = new L.TileLayer(osmUrl, {minZoom: 4, maxZoom: 18, attribution: osmAttrib});		
 
 	// start the map in South-East England
 	map.setView(home ,12);
@@ -27,13 +25,6 @@ function initmap() { //loads the map
 	//loads the first plots on mapLoad
 	askForPlots();
 	map.on('moveend', onMapMove);
-}
-
-function getXmlHttpObject() {
-	//ajax request function
-	if (window.XMLHttpRequest) { return new XMLHttpRequest(); }
-	if (window.ActiveXObject)  { return new ActiveXObject("Microsoft.XMLHTTP"); }
-	return null;
 }
 
 function removeMarkers() {
@@ -82,9 +73,8 @@ function removeMarkers() {
 	plotlayers=[];
 }
 
-//more at https://switch2osm.org/using-tiles/getting-started-with-leaflet/
-
 initmap();
 
 function onMapMove(e) { askForPlots(); }
 
+//credits: Heavily inspired from https://switch2osm.org/using-tiles/getting-started-with-leaflet/
