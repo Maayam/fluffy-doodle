@@ -38,23 +38,23 @@ class Plot
 	//GETTERS
 	///////////////////////
 
-	public function get_id(){
+	public function getId(){
 		return $this->id;
 	}
 
-	public function get_lat(){
+	public function getLat(){
 		return $this->lat;
 	}
 
-	public function get_lng(){
+	public function getLng(){
 		return $this->lng;
 	}
 
-	public function get_name(){
+	public function getName(){
 		return $this->name;
 	}
 
-	public function get_note(){
+	public function getNote(){
 		return $this->note;
 	}
 
@@ -62,23 +62,23 @@ class Plot
 	//SETTERS
 	/////////////////////
 
-	public function set_id($id){
+	public function setId($id){
 		$this->id = $id;
 	}
 
-	public function set_lat($lat){
+	public function setLat($lat){
 		$this->lat = $lat;
 	}
 
-	public function set_lng($lng){
+	public function setLng($lng){
 		$this->lng = $lng;
 	}
 
-	public function set_name($name){
+	public function setName($name){
 		$this->name = $name;
 	}
 
-	public function set_note($note){
+	public function setNote($note){
 		$this->note = $note;
 	}
 }
