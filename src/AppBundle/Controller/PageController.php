@@ -21,7 +21,7 @@ class PageController extends Controller
      */
     public function mapAction(Request $request)
     {
-        return $this->render('page/user-map.html.twig');
+        return $this->render('page/user-map/index.html.twig');
     }
 
     /**
