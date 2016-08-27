@@ -17,7 +17,7 @@ class PlotController extends Controller
     /**
      * @Route("/plots", name="indexPlotsPage")
      */
-    public function indexAction(Request $request){
+    public function debug_indexAction(Request $request){
     	//index all plots
 	    $plots = $this->getDoctrine()
 	        ->getRepository('AppBundle:Plot')
@@ -34,8 +34,8 @@ class PlotController extends Controller
     /**
      * @Route("/plot/{plotId}", name="viewPlotPage")
      */
-	public function showAction($plotId)
-	{
+	public function debug_showAction($plotId){
+		//shows a single Plot By id in a rough template
 	    $plot = $this->getDoctrine()
 	        ->getRepository('AppBundle:Plot')
 	        ->find($plotId);
@@ -54,6 +54,8 @@ class PlotController extends Controller
 	 *@Route("/findInView", name="findInViewPage")
 	 */
 	public function ajax_findInViewAction(Request $request){
+		//meant for AJAX: responds a JSON array of all plots contained in the box formed the two points [minLat, minLng] and [maxLat, maxLng]
+
 		$bounds = [
 			"minLat" => $request->query->get('minLat'),
 			"minLng" => $request->query->get('minLng'),
@@ -82,17 +84,23 @@ class PlotController extends Controller
 	}
 
 	/**
-	 *@Route("/getPlotForm", name="testFormPage")
+	 *@Route("/getPlotForm", name="getFormPage")
 	 */
-    public function ajax_getFormAction(Request $request)
-    {
-        // create a plot and give it some dummy data for this example
+    public function ajax_getFormAction(Request $request){
+    	//meant to respond to AJAX. returns the HTML form to create a plot as response
+
+		$lat = $request->query->get('lat');
+		$lng = $request->query->get('lng');
+
+
+        // create a plot and give it the coords where the user clicked
         $plot = new Plot();
-        $plot->setLat(null);
-        $plot->setLng(null);
+        $plot->setLat($lat);
+        $plot->setLng($lng);
         $plot->setName('');
         $plot->setNote('');
 
+        //build the form
         $form = $this->createFormBuilder($plot)
 	        ->add('Lat', NumberType::class )
 	        ->add('Lng', NumberType::class )
@@ -101,15 +109,55 @@ class PlotController extends Controller
             ->add('save', SubmitType::class, array('label' => 'Create Plot'))
             ->getForm();
 
-        return $this->render('page/testForm.html.twig', array(
+        //handling the submit request
+	    $form->handleRequest($request);
+
+	    if ($form->isSubmitted() && $form->isValid()) {
+	        // $form->getData() holds the submitted values
+	        // but, the original `$plot` variable has also been updated
+	        $plot = $form->getData();
+	        // ... perform some action, such as saving the plot to the database
+	        // for example, if Plot is a Doctrine entity, save it!
+	        $em = $this->getDoctrine()->getManager();
+	        $em->persist($plot);
+	        $em->flush(); //just like in debug_testCreateAction
+	        return new JsonResponse(array('status' => 'success'));
+	    }
+
+
+        return $this->render('page/plotForm.html.twig', array(
             'form' => $form->createView(),
         ));
     }
 
     /**
+     * @Route("/addPlot", name="addPlot")
+     */
+    public function ajax_AddAction(Request $request){
+    	//meant to accept only AJAX. adds a plot to the db
+
+    	$data = $request->request->all();
+
+	    $plot = new Plot();
+	    $plot->setLat($data['Lat']);
+	    $plot->setLng($data['Lng']);
+	    $plot->setName($data['Name']);
+	    $plot->setNote($data['Note']);
+
+	    $em = $this->getDoctrine()->getManager();
+
+	    // tells Doctrine you want to (eventually) save the Product (no queries yet)
+	    $em->persist($plot);
+	    // actually executes the queries (i.e. the INSERT query)
+	    $em->flush();
+
+	    return new JsonResponse(array('status' => 'success'));
+	}
+
+    /**
      * @Route("/addTestPlot", name="testPlotPage")
      */
-    public function testCreateAction(){
+    public function debug_testCreateAction(){
     	//dev function to add manually a plot to the db
     	//(change values below)
 	    $plot = new Plot();

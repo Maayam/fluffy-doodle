@@ -4,11 +4,12 @@ version 1:
 
 -ajout d'un plot au clique sur la carte
 	X-faire le template du formulaire d'ajout (généré localement ou fetched from server?)
-	-Javascript pour pop un formulaire onMapClick (jss/map.js)
-	-server-side script pour traiter les données postées par le formulaire et enregistrer une nouvelle entrée dans la db (PlotController.php)
-	-afficher une notification de succès
+	X-Javascript pour pop un formulaire onMapClick (jss/map.js)
+		X-trouver un moyen de submit le formulaire via AJAX
+	X-server-side script pour traiter les données postées par le formulaire et enregistrer une nouvelle entrée dans la db (PlotController.php)
+	O-afficher une notification de succès (put this in TODO I'll do it later...)
 
--rechercher un plot par nom
+-rechercher un plot par nom (KONO)
 	-Ajouter une barre de recherche dans le template pages/user-map.html.twig (formulaire)
 	-server-side script pour renvoyer LE plot trouvé en JSON ou une notif dans le cas ou rien n'a été trouvé
 	-JS dans map.js pour pan automatiquement vers le plot trouvé

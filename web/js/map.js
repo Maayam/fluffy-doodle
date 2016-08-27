@@ -1,4 +1,6 @@
-var l = (data) => {
+(function(){//this is a closure
+
+var l = (data) => { //cuz i'm lazy
 	console.log(data);
 }
 
@@ -27,12 +29,6 @@ function initmap() { //loads the map
 	map.on('moveend', onMapMove);
 }
 
-function removeMarkers() {
-	for (i=0;i<plotlayers.length;i++) {
-		map.removeLayer(plotlayers[i]);
-	}
-	plotlayers=[];
-}
 
 function askForPlots() {
 	// request the marker info with AJAX for the current bounds
@@ -73,8 +69,67 @@ function removeMarkers() {
 	plotlayers=[];
 }
 
-initmap();
-
 function onMapMove(e) { askForPlots(); }
 
-//credits: Heavily inspired from https://switch2osm.org/using-tiles/getting-started-with-leaflet/
+
+
+function popFormOnClick(){
+	//this could probably be improved... probably...
+	var marker = false;
+	map.on('click', function(e) {
+		//creates a new marker on click
+		if(marker){
+			//remove the previous marker first (if one)
+			map.removeLayer(marker);
+		}
+		marker = new L.Marker(e.latlng);
+		map.addLayer(marker); //insert marker
+
+		//now, get the Form from server
+		$.ajax({ 
+			url: '/getPlotForm?lat='+e.latlng.lat+'&lng='+e.latlng.lng
+		}).done(function(data){
+			//when got the form, append it in the marker popup
+			marker.bindPopup(data).openPopup();
+
+			var newName, newNote; //I need those variables global
+
+			//when the form is submitted
+			$("form[name='form']").submit(function(e) {
+    			e.preventDefault(); //prevent the redirection
+
+    			//build the data to POST to the server
+    			newName = $('#form_Name').val();
+				newNote = $('#form_Note').val();
+    			var data = { //pass this data
+					'Lat': $('#form_Lat').val(), //values of the different fields
+					'Lng': $('#form_Lng').val(), //this can be improved I think
+					'Name': newName,
+					'Note': newNote
+				};
+
+				//close the form Popup and show a loading text instead
+				marker.unbindPopup()
+				.bindPopup("Loading...")
+				.openPopup();
+
+    			//make the actual post request to the plotController
+				$.post( "/addPlot", data)
+				.done( function(data){
+					//if successful, put the newly added content into a new Popup
+					marker.unbindPopup()
+					.bindPopup("<h3>"+newName+"</h3>"+newNote)
+					.openPopup();
+
+					//vider la variable marker pour que le marker nouvellement créé ne se fasse pas écraser au prochain clique
+					marker = false;
+				}); //end post Request
+			}); //end form Submit
+		}); //end getForm
+	}); //end onMapClick
+} //end popFormOnClick()
+
+initmap();
+popFormOnClick();
+
+})();
