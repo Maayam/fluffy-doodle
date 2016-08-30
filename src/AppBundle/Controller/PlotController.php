@@ -51,6 +51,27 @@ class PlotController extends Controller
 
 
 	/**
+	 * @Route("/findPlotByName", name="findPlotByName")
+	 */
+	public function ajax_findByName(Request $request) {
+		//meant for AJAX : responds a JSON array of all plots which match with a name
+
+		$name = $request->query->get('search');
+
+		$em = $this->getDoctrine()->getManager();
+
+		$query = $em->createQuery(
+			"SELECT plot.lat, plot.lng, plot.name, plot.note ".
+			"FROM AppBundle\Entity\Plot plot ".
+			"WHERE plot.name LIKE :name "
+		)->setParameters(array('name' => "%". $name."%"));
+
+		$plots = $query->getResult();
+
+		return new JsonResponse($plots);
+	}
+
+	/**
 	 *@Route("/findInView", name="findInViewPage")
 	 */
 	public function ajax_findInViewAction(Request $request){
