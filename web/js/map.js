@@ -71,7 +71,28 @@ function removeMarkers() {
 
 function onMapMove(e) { askForPlots(); }
 
+function searchPlotByName() {
+	$("#search-form").submit(function(e) {
+		terms = {"search" : $("#search-term").val()};
 
+		$.ajax({
+			url:"findPlotByName",
+			type:"GET",
+			data:terms,
+			error: function(XMLHttpRequest, textStatus, errorThrown) {
+				alert("Error : " + errorThrown);
+			}
+		}).done(function(result) {
+			if(result.length > 0) {
+				updateDots(result);
+			} else {
+				alert("No plot found.");
+			}
+		});
+
+		e.preventDefault();
+	});
+}
 
 function popFormOnClick(){
 	//this could probably be improved... probably...
@@ -131,5 +152,6 @@ function popFormOnClick(){
 
 initmap();
 popFormOnClick();
+searchPlotByName();
 
 })();
