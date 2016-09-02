@@ -157,12 +157,21 @@ function popFormOnClick(){
 				$.post( "/plot", data)
 				.done( function(data){
 					//if successful, put the newly added content into a new Popup
-					marker.unbindPopup()
-					.bindPopup("<h3>"+newName+"</h3>"+newNote)
-					.openPopup();
+					if(data.success){
+						l("plot form successfully submited: (map.js in popFormOnClick()");
+						//display a nice notification instead of this...
+						marker.unbindPopup()
+						.bindPopup("<h3>"+newName+"</h3>"+newNote)
+						.openPopup();
 
-					//vider la variable marker pour que le marker nouvellement créé ne se fasse pas écraser au prochain clique
-					marker = false;
+						//vider la variable marker pour que le marker nouvellement créé ne se fasse pas écraser au prochain clique
+						marker = false;
+					}
+					else{
+						marker.unbindPopup()
+						.bindPopup("Sorry... Form Submission Failed")
+						.openPopup();
+					}
 				}); //end post Request
 			}); //end form Submit
 		}); //end getForm

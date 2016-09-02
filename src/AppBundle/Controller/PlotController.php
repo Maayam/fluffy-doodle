@@ -56,7 +56,7 @@ class PlotController extends Controller
 	        $em = $this->getDoctrine()->getManager();
 	        $em->persist($plot);
 	        $em->flush(); //just like in debug_testCreateAction
-	        return new JsonResponse(array('status' => 'success'));
+	        return new JsonResponse(array('success' => true));
 	    }
 
 
