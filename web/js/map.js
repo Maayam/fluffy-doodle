@@ -3,6 +3,9 @@
 var l = (data) => { //cuz i'm lazy
 	console.log(data);
 }
+var throwAjaxError = (MLHttpRequest, textStatus, errorThrown) => {
+	alert("AJAX request Failed...\n Text Status: "+textStatus+"\n Error Thrown: "+errorThrown);
+}
 
 var map;
 var ajaxRequest;
@@ -35,10 +38,20 @@ function askForPlots() {
 	var bounds=map.getBounds();
 	var minll=bounds.getSouthWest();
 	var maxll=bounds.getNorthEast();
-	var url='findInView?minLng='+minll.lng+'&minLat='+minll.lat+'&maxLat='+maxll.lat+'&maxLng='+maxll.lng;
 
 	$.ajax({
-	  url: url,
+	  url: 'plot',
+	  type: 'GET',
+	  data: {
+	  	'filter': 'plotsInBox',
+		'minLng': minll.lng,
+		'minLat': minll.lat,
+		'maxLat': maxll.lat,
+		'maxLng': maxll.lng
+	  },
+		error: function(XMLHttpRequest, textStatus, errorThrown) {
+			throwAjaxError(XMLHttpRequest, textStatus, errorThrown);
+		}
 	}).done(function(plotList) { updateDots(plotList); });
 }
 
@@ -73,14 +86,15 @@ function onMapMove(e) { askForPlots(); }
 
 function searchPlotByName() {
 	$("#search-form").submit(function(e) {
-		terms = {"search" : $("#search-term").val()};
-
 		$.ajax({
-			url:"findPlotByName",
+			url:"plot",
 			type:"GET",
-			data:terms,
+			data:{
+				'filter': 'findByName',
+				"search" : $("#search-term").val()
+			},
 			error: function(XMLHttpRequest, textStatus, errorThrown) {
-				alert("Error : " + errorThrown);
+				throwAjaxError(XMLHttpRequest, textStatus, errorThrown);
 			}
 		}).done(function(result) {
 			if(result.length > 0) {
@@ -107,9 +121,11 @@ function popFormOnClick(){
 		map.addLayer(marker); //insert marker
 
 		//now, get the Form from server
-		$.ajax({ 
-			url: '/getPlotForm?lat='+e.latlng.lat+'&lng='+e.latlng.lng
-		}).done(function(data){
+		var coords = {
+			'lat': e.latlng.lat,
+			'lng': e.latlng.lng
+		};
+		$.post('/plot', coords).done(function(data){
 			//when got the form, append it in the marker popup
 			marker.bindPopup(data).openPopup();
 
@@ -135,7 +151,7 @@ function popFormOnClick(){
 				.openPopup();
 
     			//make the actual post request to the plotController
-				$.post( "/addPlot", data)
+				$.post( "/plot", data)
 				.done( function(data){
 					//if successful, put the newly added content into a new Popup
 					marker.unbindPopup()

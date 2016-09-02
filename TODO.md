@@ -1,6 +1,11 @@
 I'LL DO IT LATER
 =================
 
+#BUGS
+======
+-while filtering with search bar, ALL plots appear on the map after panning.
+-when performing a search AFTER adding some plots on the map, the newly added plots appear AFTER the search is performed even when it is not supposed to be in the search result
+ 
 #UI
 ====
 -notice the user for AJAX loading time when adding a plot from the map
