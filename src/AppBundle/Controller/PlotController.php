@@ -11,6 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 
 class PlotController extends Controller
 {
@@ -123,8 +124,8 @@ class PlotController extends Controller
 
         //build the form
         $form = $this->createFormBuilder($plot)
-	        ->add('Lat', NumberType::class )
-	        ->add('Lng', NumberType::class )
+	        ->add('Lat', HiddenType::class )
+	        ->add('Lng', HiddenType::class )
 	        ->add('Name', TextType::class )
 	        ->add('Note', TextareaType::class )
             ->add('save', SubmitType::class, array('label' => 'Create Plot'))
