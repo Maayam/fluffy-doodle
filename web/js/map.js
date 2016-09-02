@@ -139,10 +139,13 @@ function popFormOnClick(){
     			newName = $('#form_Name').val();
 				newNote = $('#form_Note').val();
     			var data = { //pass this data
-					'Lat': $('#form_Lat').val(), //values of the different fields
-					'Lng': $('#form_Lng').val(), //this can be improved I think
-					'Name': newName,
-					'Note': newNote
+    				'form': {
+						'Lat': $('#form_Lat').val(), //values of the different fields
+						'Lng': $('#form_Lng').val(), //this can be improved I think
+						'Name': newName,
+						'Note': newNote,
+						'_token': $('#form__token').val()
+						}
 				};
 
 				//close the form Popup and show a loading text instead

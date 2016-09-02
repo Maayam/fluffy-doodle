@@ -19,7 +19,7 @@ class PlotController extends Controller
 
 	/**
 	 *@Route("/plot", name="postPlot")
-	 *@Method("POST")
+	 *@Method({"POST"})
 	 */
     public function postPlot(Request $request){
     //meant to respond to AJAX. returns the HTML form to create a plot as response
