@@ -7,6 +7,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use AppBundle\Entity\Plot;
+use AppBundle\Form\PlotType;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
@@ -23,9 +24,39 @@ class PlotController extends Controller
 	 */
     public function postPlot(Request $request){
     //meant to respond to AJAX. returns the HTML form to create a plot as response
+        // create a plot
+        $plot = new Plot();
 
-		$lat = $request->request->get('lat');
-		$lng = $request->request->get('lng');
+        //build the form
+        $plotForm = $this->createForm(PlotType::class, $plot);
+
+        //handling the submit request
+	    $plotForm->handleRequest($request);
+
+	    if ($plotForm->isSubmitted() && $plotForm->isValid()) {
+	        // $form->getData() holds the submitted values
+	        // but, the original `$plot` variable has also been updated
+	        $plot = $plotForm->getData();
+	        // ... perform some action, such as saving the plot to the database
+	        // for example, if Plot is a Doctrine entity, save it!
+	        $em = $this->getDoctrine()->getManager();
+	        $em->persist($plot);
+	        $em->flush(); //just like in debug_testCreateAction
+	        return new JsonResponse(array('success' => true));
+	    }
+	    else{
+	    	return new JsonResponse(array('success' => false));
+	    }
+    }
+
+	/**
+	 *@Route("/plot/form", name="getPlotForm")
+	 *@Method({"GET"})
+	 */
+	public function getPlotForm(Request $request){
+    //meant to respond to AJAX. returns the HTML form to create a plot as response
+		$lat = $request->query->get('lat');
+		$lng = $request->query->get('lng');
 
 
         // create a plot and give it the coords where the user clicked
@@ -35,41 +66,27 @@ class PlotController extends Controller
         $plot->setName('');
         $plot->setNote('');
 
+        //fetch tag_list
+		$em = $this->getDoctrine()->getManager();
+		$query = $em->createQuery(
+			"SELECT tag.id, tag.name ".
+			"FROM AppBundle\Entity\Tag tag ");
+		$tag_list = $query->getResult();
+
         //build the form
-        $form = $this->createFormBuilder($plot)
-	        ->add('Lat', HiddenType::class )
-	        ->add('Lng', HiddenType::class )
-	        ->add('Name', TextType::class )
-	        ->add('Note', TextareaType::class )
-            ->add('save', SubmitType::class, array('label' => 'Create Plot'))
-            ->getForm();
-
-        //handling the submit request
-	    $form->handleRequest($request);
-
-	    if ($form->isSubmitted() && $form->isValid()) {
-	        // $form->getData() holds the submitted values
-	        // but, the original `$plot` variable has also been updated
-	        $plot = $form->getData();
-	        // ... perform some action, such as saving the plot to the database
-	        // for example, if Plot is a Doctrine entity, save it!
-	        $em = $this->getDoctrine()->getManager();
-	        $em->persist($plot);
-	        $em->flush(); //just like in debug_testCreateAction
-	        return new JsonResponse(array('success' => true));
-	    }
-
+        $plotForm = $this->createForm(PlotType::class, $plot);
 
         return $this->render('page/plotForm.html.twig', array(
-            'form' => $form->createView(),
-        ));
-    }
+            'form' => $plotForm->createView(),
+            'tags' => $tag_list
+		));
+	}
 
 	/**
-	 *@Route("/plot", name="getPlot")
+	 *@Route("/plot/search", name="findPlot")
 	 *@Method({"GET"})
 	 */
-	public function getPlot(Request $request){
+	public function findPlots(Request $request){
 		$filter = $request->query->get('filter');
 
 		if($filter == 'plotsInBox'){

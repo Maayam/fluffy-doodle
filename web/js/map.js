@@ -1,4 +1,4 @@
-(function(){//this is a closure
+
 
 var l = (data) => { //cuz i'm lazy
 	console.log(data);
@@ -40,7 +40,7 @@ function askForPlots() {
 	var maxll=bounds.getNorthEast();
 
 	$.ajax({
-	  url: 'plot',
+	  url: 'plot/search',
 	  type: 'GET',
 	  data: {
 	  	'filter': 'plotsInBox',
@@ -87,7 +87,7 @@ function onMapMove(e) { askForPlots(); }
 function searchPlotByName() {
 	$("#search-form").submit(function(e) {
 		$.ajax({
-			url:"plot",
+			url:"plot/search",
 			type:"GET",
 			data:{
 				'filter': 'findByName',
@@ -125,26 +125,31 @@ function popFormOnClick(){
 			'lat': e.latlng.lat,
 			'lng': e.latlng.lng
 		};
-		$.post('/plot', coords).done(function(data){
+		$.ajax({
+			'url': '/plot/form',
+			'type': 'GET', 
+			'data': coords,
+		}).done(function(data){
 			//when got the form, append it in the marker popup
-			marker.bindPopup(data).openPopup();
+			marker.bindPopup("<div id='plot-form-popup'></div>").openPopup();
+			$(".leaflet-popup-content-wrapper").append(data);
 
 			var newName, newNote; //I need those variables global
 
 			//when the form is submitted
-			$("form[name='form']").submit(function(e) {
+			$("form[name='plot']").submit(function(e) {
     			e.preventDefault(); //prevent the redirection
 
     			//build the data to POST to the server
-    			newName = $('#form_Name').val();
-				newNote = $('#form_Note').val();
+    			newName = $('#plot_Name').val();
+				newNote = $('#plot_Note').val();
     			var data = { //pass this data
-    				'form': {
-						'Lat': $('#form_Lat').val(), //values of the different fields
-						'Lng': $('#form_Lng').val(), //this can be improved I think
+    				'plot': {
+						'Lat': $('#plot_Lat').val(), //values of the different fields
+						'Lng': $('#plot_Lng').val(), //this can be improved I think
 						'Name': newName,
 						'Note': newNote,
-						'_token': $('#form__token').val()
+						'_token': $('#plot__token').val()
 						}
 				};
 
@@ -177,9 +182,6 @@ function popFormOnClick(){
 		}); //end getForm
 	}); //end onMapClick
 } //end popFormOnClick()
-
 initmap();
 popFormOnClick();
 searchPlotByName();
-
-})();

@@ -34,6 +34,15 @@ class Plot
 	 */
 	private $note;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="Tag")
+     */
+    private $tags;
+
+    public function __construct() {
+        $this->tags = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
 	///////////////////////
 	//GETTERS
 	///////////////////////
