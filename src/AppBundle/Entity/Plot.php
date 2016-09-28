@@ -3,6 +3,9 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity
@@ -34,6 +37,17 @@ class Plot
 	 */
 	private $note;
 
+	private $file;
+
+	/**
+	* @ORM\OneToMany(targetEntity="Media", mappedBy="id")
+	*/
+	private $pictures;
+
+	public function __construct() {
+		$this->pictures = new ArrayCollection();
+	}
+
 	///////////////////////
 	//GETTERS
 	///////////////////////
@@ -58,6 +72,14 @@ class Plot
 		return $this->note;
 	}
 
+	public function getPictures() {
+		return $this->pictures;
+	}
+	
+	public function getFile() {
+		return $this->file;
+	}
+
 	/////////////////////
 	//SETTERS
 	/////////////////////
@@ -80,5 +102,17 @@ class Plot
 
 	public function setNote($note){
 		$this->note = $note;
+	}
+
+	public function setPictures($pictures) {
+		$this->picture = $pictures;
+	}
+
+	public function addPicture($picture) {
+		$pictures[] = $picture;
+	}
+
+	public function setFile($file) {
+		$this->file = $file;
 	}
 }
