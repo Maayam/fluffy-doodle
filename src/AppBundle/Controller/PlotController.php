@@ -13,6 +13,7 @@ use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 
 class PlotController extends Controller
 {
@@ -41,6 +42,7 @@ class PlotController extends Controller
 	        ->add('Lng', HiddenType::class )
 	        ->add('Name', TextType::class )
 	        ->add('Note', TextareaType::class )
+	        ->add('File', FileType::class, array('label'=>'Picture', 'required'=>false))
             ->add('save', SubmitType::class, array('label' => 'Create Plot'))
             ->getForm();
 
@@ -51,6 +53,14 @@ class PlotController extends Controller
 	        // $form->getData() holds the submitted values
 	        // but, the original `$plot` variable has also been updated
 	        $plot = $form->getData();
+	        
+	        //If a picture was uploaded
+	        if($plot->getFile() != null) {
+	        	$mediaManager = $this->get("media_manager");
+	        	
+	        	$plot->addPicture($mediaManager->addMedia($plot));
+	        }
+	        
 	        // ... perform some action, such as saving the plot to the database
 	        // for example, if Plot is a Doctrine entity, save it!
 	        $em = $this->getDoctrine()->getManager();
@@ -124,4 +134,4 @@ class PlotController extends Controller
 		$plots = $query->getResult();
 		return $plots;
 	}
-}
+} 
