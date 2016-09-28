@@ -134,11 +134,11 @@ function popFormOnClick(){
 			//when the form is submitted
 			$("form[name='form']").submit(function(e) {
     			e.preventDefault(); //prevent the redirection
-
+				
     			//build the data to POST to the server
     			newName = $('#form_Name').val();
 				newNote = $('#form_Note').val();
-    			var data = { //pass this data
+    			/*var data = { //pass this data
     				'form': {
 						'Lat': $('#form_Lat').val(), //values of the different fields
 						'Lng': $('#form_Lng').val(), //this can be improved I think
@@ -147,6 +147,9 @@ function popFormOnClick(){
 						'_token': $('#form__token').val()
 						}
 				};
+				*/
+				
+				var data = new FormData($(this)[0]);
 
 				//close the form Popup and show a loading text instead
 				marker.unbindPopup()
@@ -154,8 +157,14 @@ function popFormOnClick(){
 				.openPopup();
 
     			//make the actual post request to the plotController
-				$.post( "/plot", data)
-				.done( function(data){
+				$.ajax({
+					url:"/plot",
+					type:"POST",
+					data:data,
+					contentType: false,
+    				processData: false,
+    				cache:false,
+				}).done( function(data){
 					//if successful, put the newly added content into a new Popup
 					if(data.success){
 						l("plot form successfully submited: (map.js in popFormOnClick()");
