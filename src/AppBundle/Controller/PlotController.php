@@ -14,6 +14,7 @@ use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 
 class PlotController extends Controller
 {
@@ -28,15 +29,30 @@ class PlotController extends Controller
         $plot = new Plot();
 
         //build the form
-        $plotForm = $this->createForm(PlotType::class, $plot);
+        $form = $this->createFormBuilder($plot)
+	        ->add('Lat', HiddenType::class )
+	        ->add('Lng', HiddenType::class )
+	        ->add('Name', TextType::class )
+	        ->add('Note', TextareaType::class )
+	        ->add('File', FileType::class, array('label'=>'Picture', 'required'=>false))
+            ->add('save', SubmitType::class, array('label' => 'Create Plot'))
+            ->getForm();
 
         //handling the submit request
-	    $plotForm->handleRequest($request);
+	    $form->handleRequest($request);
 
-	    if ($plotForm->isSubmitted() && $plotForm->isValid()) {
+	    if ($form->isSubmitted() && $form->isValid()) {
 	        // $form->getData() holds the submitted values
 	        // but, the original `$plot` variable has also been updated
-	        $plot = $plotForm->getData();
+
+	        $plot = $form->getData();
+	        
+	        //If a picture was uploaded
+	        if($plot->getFile() != null) {
+	        	$mediaManager = $this->get("media_manager");
+	        	
+	        	$plot->addPicture($mediaManager->addMedia($plot));
+	        }
 	        // ... perform some action, such as saving the plot to the database
 	        // for example, if Plot is a Doctrine entity, save it!
 	        $em = $this->getDoctrine()->getManager();
@@ -66,7 +82,7 @@ class PlotController extends Controller
         $plot->setName('');
         $plot->setNote('');
 
-  //       //fetch tag_list
+		//fetch tag_list
 		// $em = $this->getDoctrine()->getManager();
 		// $query = $em->createQuery(
 		// 	"SELECT tag.id, tag.name ".
@@ -97,12 +113,24 @@ class PlotController extends Controller
 				"maxLng" => $request->query->get('maxLng')
 			];
 			$plots = $this->findInBox($box);
+			
+			foreach($plots as $index => $plot) {
+				
+				$plots[$index]["html"] = $this->renderView("plot.html.twig", array(
+					"description" => $plot["note"],
+					"picture" => $plot["path"],
+					"name" => $plot["name"]
+				)); 
+			}
+			
+			
 			return new JsonResponse($plots);
 		}
 
 		if($filter == 'findByName'){
 			$name = $request->query->get('search');
 			$plots = $this->findByName($name);
+			
 			return new JsonResponse($plots);
 		}
 	}
@@ -111,12 +139,13 @@ class PlotController extends Controller
 	//returns all plots contained in the box formed by the two points [minLat, minLng] and [maxLat, maxLng]
 		$em = $this->getDoctrine()->getManager();
 		$query = $em->createQuery(
-		    'SELECT plot.lat, plot.lng, plot.name, plot.note
-		    FROM AppBundle\Entity\Plot plot
+		    'SELECT plot.lat, plot.lng, plot.name, plot.note, media.path
+		    FROM AppBundle\Entity\Plot plot, AppBundle\Entity\Media media
 		    WHERE plot.lat > :minLat
 		    AND plot.lat < :maxLat
 		    AND plot.lng > :minLng
-		    AND plot.lng < :maxLng'
+		    AND plot.lng < :maxLng
+		    AND media.plot = plot.id'
 		)->setParameters(array(
 			'minLat' => $box['minLat'],
 			'minLng' => $box['minLng'],
@@ -141,4 +170,4 @@ class PlotController extends Controller
 		$plots = $query->getResult();
 		return $plots;
 	}
-}
+} 

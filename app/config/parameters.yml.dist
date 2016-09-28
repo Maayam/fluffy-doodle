@@ -17,3 +17,8 @@ parameters:
 
     # A secret key that's used to generate certain security-related tokens
     secret:            ThisTokenIsNotSoSecretChangeIt
+
+    picture_dir:       '%kernel.root_dir%/../web/uploads/pictures'
+    thumbs_height:     200
+    thumbs_width:      200
+    thumbs_dir:        '%kernel.root_dir%/../web/uploads/pictures/thumbs'

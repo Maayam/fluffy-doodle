@@ -49,10 +49,10 @@ function askForPlots() {
 		'maxLat': maxll.lat,
 		'maxLng': maxll.lng
 	  },
-		error: function(XMLHttpRequest, textStatus, errorThrown) {
+		error: function(data, XMLHttpRequest, textStatus, errorThrown) {
 			throwAjaxError(XMLHttpRequest, textStatus, errorThrown);
 		}
-	}).done(function(plotList) { updateDots(plotList); });
+	}).done(function(plotList) { alert(JSON.stringify(plotList)); updateDots(plotList); });
 }
 
 function updateDots(plotList) {
@@ -70,7 +70,7 @@ function updateDots(plotList) {
 		plotmark.data=plot;
 		map.addLayer(plotmark);
 
-		plotmark.bindPopup("<h3>"+plot.name+"</h3>"+plot.note);
+		plotmark.bindPopup(plot.html);
 		plotlayers.push(plotmark);
 	}
 }
@@ -139,19 +139,13 @@ function popFormOnClick(){
 			//when the form is submitted
 			$("form[name='plot']").submit(function(e) {
     			e.preventDefault(); //prevent the redirection
-
+				
     			//build the data to POST to the server
-    			newName = $('#plot_Name').val();
-				newNote = $('#plot_Note').val();
-    			var data = { //pass this data
-    				'plot': {
-						'Lat': $('#plot_Lat').val(), //values of the different fields
-						'Lng': $('#plot_Lng').val(), //this can be improved I think
-						'Name': newName,
-						'Note': newNote,
-						'_token': $('#plot__token').val()
-						}
-				};
+
+    			newName = $('#form_Name').val();
+				newNote = $('#form_Note').val();
+				
+				var data = new FormData($(this)[0]);
 
 				//close the form Popup and show a loading text instead
 				marker.unbindPopup()
@@ -159,14 +153,20 @@ function popFormOnClick(){
 				.openPopup();
 
     			//make the actual post request to the plotController
-				$.post( "/plot", data)
-				.done( function(data){
+				$.ajax({
+					url:"/plot",
+					type:"POST",
+					data:data,
+					contentType: false,
+    				processData: false,
+    				cache:false,
+				}).done( function(data){
 					//if successful, put the newly added content into a new Popup
 					if(data.success){
 						l("plot form successfully submited: (map.js in popFormOnClick()");
 						//display a nice notification instead of this...
 						marker.unbindPopup()
-						.bindPopup("<h3>"+newName+"</h3>"+newNote)
+						.bindPopup(data.html)
 						.openPopup();
 
 						//vider la variable marker pour que le marker nouvellement créé ne se fasse pas écraser au prochain clique

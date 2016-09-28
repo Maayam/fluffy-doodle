@@ -7,3 +7,6 @@ services:
 #    service_name:
 #        class: AppBundle\Directory\ClassName
 #        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]
+    media_manager:
+        class: AppBundle\MediaManager
+        arguments: ["@service_container"]

@@ -36,6 +36,9 @@ framework:
 twig:
     debug:            "%kernel.debug%"
     strict_variables: "%kernel.debug%"
+    globals:
+        thumbs_dir: /uploads/pictures/thumbs
+        pictures_dir: /uploads/pictures
 
 # Doctrine Configuration
 doctrine:
