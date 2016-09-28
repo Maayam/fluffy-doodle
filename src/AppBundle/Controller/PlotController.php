@@ -66,12 +66,12 @@ class PlotController extends Controller
         $plot->setName('');
         $plot->setNote('');
 
-        //fetch tag_list
-		$em = $this->getDoctrine()->getManager();
-		$query = $em->createQuery(
-			"SELECT tag.id, tag.name ".
-			"FROM AppBundle\Entity\Tag tag ");
-		$tag_list = $query->getResult();
+  //       //fetch tag_list
+		// $em = $this->getDoctrine()->getManager();
+		// $query = $em->createQuery(
+		// 	"SELECT tag.id, tag.name ".
+		// 	"FROM AppBundle\Entity\Tag tag ");
+		// $tag_list = $query->getResult();
 
         //build the form
         $plotForm = $this->createForm(PlotType::class, $plot);

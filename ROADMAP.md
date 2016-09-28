@@ -1,49 +1,61 @@
-version 1:
 =====================================================
------------------------------------------------------
+----------------------------------------------------------
+* enrichir les plots
+	* faire le template d'un plot développé
+		* pouvoir ajouter des photos pour ce plot
+			* créer une Entité et une table Media
+			* formulaire d'upload de photo
+			* server-side script pour l'enregistrement des fichiers sur le disque et des emplacements dans la bdd (MediaController)
+		* pouvoir visionner les photos pour ce plots
+			* much JS (probablement une librairie)
+			* server-side script pour servir les photos demandées par la librairie JS (MediaController)
+		* pouvoir ajouter des tags à ce plot
+			* créer une Entité et une table Tag, et une table de relation (manyToMany)
+			* possibilité d'en ajouter à la création du plot (modifier le template de création de plot)
+			* possibilité d'en ajouter sur un plot éxistant
+		* afficher les tags de ce plot
+			(pouvoir lancer une recherche par tag en cliquant sur un tag?)
 
--ajout d'un plot au clique sur la carte
-	X-faire le template du formulaire d'ajout (généré localement ou fetched from server?)
-	X-Javascript pour pop un formulaire onMapClick (jss/map.js)
-		X-trouver un moyen de submit le formulaire via AJAX
-	X-server-side script pour traiter les données postées par le formulaire et enregistrer une nouvelle entrée dans la db (PlotController.php)
-	O-afficher une notification de succès (put this in TODO I'll do it later...)
+* Users
+	* Register_page [GET /user/register]
+		* routing + controller method
+		* make template
+		* posting user to the database success
+		* get form via ajax
+	* post user [POST /user/register]
+	* display one profile [/user/{name}]
+	* list profiles [/user]
+	* authentication_page [GET /user/login] (ajax would be nice)
+	* authenticate [POST /user/login] --> instantiate session
+	* update navbar
+		* create navbar partial instead of coding it in map.html.twig
+		* (IF SESSION) display "logout" (ELSE) display "connect/register"
+	* as a user, edit my own profile
+	* mark plots as "danced it"
+	* manage my plots
 
--rechercher un plot par nom (KONO)
-	-Ajouter une barre de recherche dans le template pages/user-map.html.twig (formulaire)
-	-server-side script pour renvoyer LE plot trouvé en JSON ou une notif dans le cas ou rien n'a été trouvé
-	-JS dans map.js pour pan automatiquement vers le plot trouvé
 
------------------------------------------------------
+
+----------------------------------------------------------
 =====================================================
------------------------------------------------------
--enrichir les plots
-	-faire le template d'un plot développé
-		-pouvoir ajouter des photos pour ce plot
-			-créer une Entité et une table Media
-			-formulaire d'upload de photo
-			-server-side script pour l'enregistrement des fichiers sur le disque et des emplacements dans la bdd (MediaController)
+----------------------------------------------------------
+# Compte utilisateurs
 
-		-pouvoir visionner les photos pour ce plots
-			-much JS (probablement une librairie)
-			-server-side script pour servir les photos demandées par la librairie JS (MediaController)
+en tant que **visiteur**, je souhaites pouvoir:
+	* parcourir la map
+	* voir les différentes informations pour les plots
+	* consulter les profils utilisateurs de façon restreinte
+	* m'inscrire (create User)
+	* me connecter
 
-		-pouvoir ajouter des tags à ce plot
-			-créer une Entité et une table Tag, et une table de relation (manyToMany)
-			-possibilité d'en ajouter à la création du plot (modifier le template de création de plot)
-			-possibilité d'en ajouter sur un plot éxistant
+en tant qu'**utilisateur**, je souhaites pouvoir:
+	* marquer les plots ou j'ai déjà dansé
+	* gérer les plots ou j'ai dansé (lister, supprimer, sur mon profil)
+	* éditer mon profil
+	* rechercher un utilisateur et consulter son profil
 
-		-afficher les tags de ce plot
-			(-pouvoir lancer une recherche par tag en cliquant sur un tag?)
+Entity: User
+	* **name**
+	* **password**
+	* **mail**
 
------------------------------------------------------
-=====================================================
------------------------------------------------------
--un peu de modération quand même
-	-user account (admin only, créé manuellement)
-		-Entité et table
-	-template de connexion
-	-modifier template map pour ajouter les options d'administration
-
------------------------------------------------------
-=====================================================
