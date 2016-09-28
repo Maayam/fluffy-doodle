@@ -49,10 +49,10 @@ function askForPlots() {
 		'maxLat': maxll.lat,
 		'maxLng': maxll.lng
 	  },
-		error: function(XMLHttpRequest, textStatus, errorThrown) {
+		error: function(data, XMLHttpRequest, textStatus, errorThrown) {
 			throwAjaxError(XMLHttpRequest, textStatus, errorThrown);
 		}
-	}).done(function(plotList) { updateDots(plotList); });
+	}).done(function(plotList) { alert(JSON.stringify(plotList)); updateDots(plotList); });
 }
 
 function updateDots(plotList) {
@@ -70,7 +70,7 @@ function updateDots(plotList) {
 		plotmark.data=plot;
 		map.addLayer(plotmark);
 
-		plotmark.bindPopup("<h3>"+plot.name+"</h3>"+plot.note);
+		plotmark.bindPopup(plot.html);
 		plotlayers.push(plotmark);
 	}
 }
@@ -170,7 +170,7 @@ function popFormOnClick(){
 						l("plot form successfully submited: (map.js in popFormOnClick()");
 						//display a nice notification instead of this...
 						marker.unbindPopup()
-						.bindPopup("<h3>"+newName+"</h3>"+newNote)
+						.bindPopup(data.html)
 						.openPopup();
 
 						//vider la variable marker pour que le marker nouvellement créé ne se fasse pas écraser au prochain clique
