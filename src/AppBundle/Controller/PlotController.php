@@ -58,7 +58,14 @@ class PlotController extends Controller
 	        $em = $this->getDoctrine()->getManager();
 	        $em->persist($plot);
 	        $em->flush(); //just like in debug_testCreateAction
-	        return new JsonResponse(array('success' => true));
+	        
+	        $html = $this->renderView("plot.html.twig", array(
+				"description" => $plot["note"],
+				"picture" => $plot["path"],
+				"name" => $plot["name"]
+			));
+	        
+	        return new JsonResponse(array('success' => true, 'html'=>$html));
 	    }
 	    else{
 	    	return new JsonResponse(array('success' => false));
@@ -83,14 +90,21 @@ class PlotController extends Controller
         $plot->setNote('');
 
 		//fetch tag_list
-		// $em = $this->getDoctrine()->getManager();
-		// $query = $em->createQuery(
-		// 	"SELECT tag.id, tag.name ".
-		// 	"FROM AppBundle\Entity\Tag tag ");
-		// $tag_list = $query->getResult();
+		 $em = $this->getDoctrine()->getManager();
+		 $query = $em->createQuery(
+		 	"SELECT tag.id, tag.name ".
+		 	"FROM AppBundle\Entity\Tag tag ");
+		 $tag_list = $query->getResult();
 
         //build the form
-        $plotForm = $this->createForm(PlotType::class, $plot);
+        $plotForm = $this->createFormBuilder($plot)
+	        ->add('Lat', HiddenType::class )
+	        ->add('Lng', HiddenType::class )
+	        ->add('Name', TextType::class )
+	        ->add('Note', TextareaType::class )
+	        ->add('File', FileType::class, array('label'=>'Picture', 'required'=>false))
+            ->add('save', SubmitType::class, array('label' => 'Create Plot'))
+            ->getForm();
 
         return $this->render('page/plotForm.html.twig', array(
             'form' => $plotForm->createView(),
@@ -104,6 +118,8 @@ class PlotController extends Controller
 	 */
 	public function findPlots(Request $request){
 		$filter = $request->query->get('filter');
+		
+		$plots = null;
 
 		if($filter == 'plotsInBox'){
 			$box = [
@@ -113,26 +129,14 @@ class PlotController extends Controller
 				"maxLng" => $request->query->get('maxLng')
 			];
 			$plots = $this->findInBox($box);
-			
-			foreach($plots as $index => $plot) {
-				
-				$plots[$index]["html"] = $this->renderView("plot.html.twig", array(
-					"description" => $plot["note"],
-					"picture" => $plot["path"],
-					"name" => $plot["name"]
-				)); 
-			}
-			
-			
-			return new JsonResponse($plots);
 		}
 
 		if($filter == 'findByName'){
 			$name = $request->query->get('search');
 			$plots = $this->findByName($name);
-			
-			return new JsonResponse($plots);
 		}
+		
+		return new JsonResponse($this->createPlotHtml($plots));
 	}
 
 	private function findInBox($box){
@@ -168,6 +172,23 @@ class PlotController extends Controller
 		)->setParameters(array('name' => "%". $name."%"));
 
 		$plots = $query->getResult();
+		return $plots;
+	}
+	
+	private function createPlotHtml($plots) {
+
+		if($plots == null)
+			return null;
+
+		foreach($plots as $index => $plot) {
+		
+			$plots[$index]["html"] = $this->renderView("plot.html.twig", array(
+				"description" => $plot["note"],
+				"picture" => $plot["path"],
+				"name" => $plot["name"]
+			)); 
+		}
+		
 		return $plots;
 	}
 } 
