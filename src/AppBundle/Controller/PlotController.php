@@ -60,9 +60,9 @@ class PlotController extends Controller
 	        $em->flush(); //just like in debug_testCreateAction
 	        
 	        $html = $this->renderView("plot.html.twig", array(
-				"description" => $plot["note"],
-				"picture" => $plot["path"],
-				"name" => $plot["name"]
+				"description" => $plot->getNote(),
+				"picture" => $plot->getPictures()[0],
+				"name" => $plot->getName()
 			));
 	        
 	        return new JsonResponse(array('success' => true, 'html'=>$html));
@@ -166,9 +166,10 @@ class PlotController extends Controller
 		$em = $this->getDoctrine()->getManager();
 
 		$query = $em->createQuery(
-			"SELECT plot.lat, plot.lng, plot.name, plot.note ".
-			"FROM AppBundle\Entity\Plot plot ".
-			"WHERE plot.name LIKE :name "
+			'SELECT plot.lat, plot.lng, plot.name, plot.note, media.path
+			FROM AppBundle\Entity\Plot plot, AppBundle\Entity\Media media
+			WHERE plot.name LIKE :name 
+			AND media.plot = plot.id'
 		)->setParameters(array('name' => "%". $name."%"));
 
 		$plots = $query->getResult();
