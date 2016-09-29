@@ -70,7 +70,7 @@ function updateDots(plotList) {
 		plotmark.data=plot;
 		map.addLayer(plotmark);
 
-		plotmark.bindPopup(plot.html);
+		plotmark = plotmark.bindPopup(plot.html, {maxWidth: "auto"}).update();
 		plotlayers.push(plotmark);
 	}
 }
