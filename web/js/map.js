@@ -142,9 +142,7 @@ function popFormOnClick(){
 				var data = new FormData($(this)[0]);
 
 				//close the form Popup and show a loading text instead
-				marker.setContent("Loading...")
-				.update()
-				.openPopup();
+				marker.getPopup().setContent("Loading...").update();
 
     			//make the actual post request to the plotController
 				$.ajax({
@@ -159,17 +157,17 @@ function popFormOnClick(){
 					if(data.success){
 						l("plot form successfully submited: (map.js in popFormOnClick()");
 						//display a nice notification instead of this...
-						l(data);
-						marker.setContent(data.html)
+
+						marker.getPopup()
+						.setContent(data.html)
 						.update()
-						.openPopup();
 
 						//vider la variable marker pour que le marker nouvellement créé ne se fasse pas écraser au prochain clique
 						marker = false;
 					}
 					else{
-						marker.setContent("Sorry... Form Submission Failed")
-						.openPopup();
+						marker.getPopup()
+						.setContent("Sorry... Form Submission Failed").update();
 					}
 				}); //end post Request
 			}); //end form Submit
