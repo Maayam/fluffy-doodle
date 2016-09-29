@@ -1,3 +1,7 @@
 <h3>{{ name }}</h3>
-<a href="{{ pictures_dir }}/{{ picture }}"><img src="{{ thumbs_dir }}/{{ picture }}.png"></a>
+
+{% if picture %}
+	<a href="{{ pictures_dir }}/{{ picture }}"><img src="{{ thumbs_dir }}/{{ picture }}.png"></a>
+{% endif %}
+
 <p>{{ description }}</p>
