@@ -52,7 +52,7 @@ function askForPlots() {
 		error: function(data, XMLHttpRequest, textStatus, errorThrown) {
 			throwAjaxError(XMLHttpRequest, textStatus, errorThrown);
 		}
-	}).done(function(plotList) { alert(JSON.stringify(plotList)); updateDots(plotList); });
+	}).done(function(plotList) { updateDots(plotList); });
 }
 
 function updateDots(plotList) {
