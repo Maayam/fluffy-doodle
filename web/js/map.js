@@ -131,25 +131,19 @@ function popFormOnClick(){
 			'data': coords,
 		}).done(function(data){
 			//when got the form, append it in the marker popup
-			marker.bindPopup("<div id='plot-form-popup'></div>").openPopup();
-			$(".leaflet-popup-content-wrapper").append(data);
+			marker.bindPopup(data).openPopup();
 
 			var newName, newNote; //I need those variables global
 
 			//when the form is submitted
-			$("form[name='plot']").submit(function(e) {
+			$("form[name='form']").submit(function(e) {
     			e.preventDefault(); //prevent the redirection
-				
-    			//build the data to POST to the server
-
-    			newName = $('#form_Name').val();
-				newNote = $('#form_Note').val();
 				
 				var data = new FormData($(this)[0]);
 
 				//close the form Popup and show a loading text instead
-				marker.unbindPopup()
-				.bindPopup("Loading...")
+				marker.setContent("Loading...")
+				.update()
 				.openPopup();
 
     			//make the actual post request to the plotController
@@ -165,16 +159,16 @@ function popFormOnClick(){
 					if(data.success){
 						l("plot form successfully submited: (map.js in popFormOnClick()");
 						//display a nice notification instead of this...
-						marker.unbindPopup()
-						.bindPopup(data.html)
+						l(data);
+						marker.setContent(data.html)
+						.update()
 						.openPopup();
 
 						//vider la variable marker pour que le marker nouvellement créé ne se fasse pas écraser au prochain clique
 						marker = false;
 					}
 					else{
-						marker.unbindPopup()
-						.bindPopup("Sorry... Form Submission Failed")
+						marker.setContent("Sorry... Form Submission Failed")
 						.openPopup();
 					}
 				}); //end post Request
