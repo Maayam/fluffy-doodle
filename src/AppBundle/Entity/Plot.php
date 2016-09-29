@@ -45,12 +45,12 @@ class Plot
 	private $file;
 
 	/**
-	* @ORM\OneToMany(targetEntity="Media", mappedBy="id")
+	* @ORM\OneToMany(targetEntity="Media", mappedBy="plot")
 	*/
 	private $pictures;
 
 	public function __construct() {
-		$this->tags = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->tags = new ArrayCollection();
 		$this->pictures = new ArrayCollection();
 	}
 
