@@ -129,6 +129,7 @@ class PlotController extends Controller
 				"maxLng" => $request->query->get('maxLng')
 			];
 			$plots = $this->findInBox($box);
+			return new JsonResponse($plots);
 		}
 
 		if($filter == 'findByName'){
@@ -144,12 +145,12 @@ class PlotController extends Controller
 		$em = $this->getDoctrine()->getManager();
 		$query = $em->createQuery(
 		    'SELECT plot.lat, plot.lng, plot.name, plot.note, media.path
-		    FROM AppBundle\Entity\Plot plot, AppBundle\Entity\Media media
+		    FROM AppBundle\Entity\Plot plot LEFT JOIN AppBundle\Entity\Media media
+		    WITH plot.id = media.plot
 		    WHERE plot.lat > :minLat
 		    AND plot.lat < :maxLat
 		    AND plot.lng > :minLng
-		    AND plot.lng < :maxLng
-		    AND media.plot = plot.id'
+		    AND plot.lng < :maxLng'
 		)->setParameters(array(
 			'minLat' => $box['minLat'],
 			'minLng' => $box['minLng'],
