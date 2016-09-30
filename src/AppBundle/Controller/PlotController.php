@@ -129,7 +129,6 @@ class PlotController extends Controller
 				"maxLng" => $request->query->get('maxLng')
 			];
 			$plots = $this->findInBox($box);
-			return new JsonResponse($plots);
 		}
 
 		if($filter == 'findByName'){
