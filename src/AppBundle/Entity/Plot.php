@@ -115,7 +115,7 @@ class Plot
 	}
 
 	public function addPicture($picture) {
-		$pictures[] = $picture;
+		$this->pictures[] = $picture;
 	}
 
 	public function setFile($file) {
