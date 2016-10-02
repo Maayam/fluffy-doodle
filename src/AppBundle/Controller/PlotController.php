@@ -19,6 +19,17 @@ use Symfony\Component\Form\Extension\Core\Type\FileType;
 class PlotController extends Controller
 {
 
+
+	/**
+	 *@Route("/view/plot/{id}", name="showPlot")
+	 *@Method({"GET"})
+	 */
+	public function viewPlot(Request $request, $id) {
+		return $this->render('page/plotView.html.twig', array(
+			"id"=>$id,
+		));
+	} 
+
 	/**
 	 *@Route("/plot", name="postPlot")
 	 *@Method({"POST"})
@@ -58,10 +69,11 @@ class PlotController extends Controller
 	        $em->persist($plot);
 	        $em->flush(); //just like in debug_testCreateAction
 	        
-	        $html = $this->renderView("plot.html.twig", array(
+	        $html = $this->renderView("page/user-map/plotPopup.html.twig", array(
 				"description" => $plot->getNote(),
 				"picture" => $plot->getPictures()[0]->getPath(),
-				"name" => $plot->getName()
+				"name" => $plot->getName(),
+				"id" => $plot->getId()
 			));
 	        
 	        return new JsonResponse(array('success' => true, 'html'=>$html));
@@ -142,7 +154,7 @@ class PlotController extends Controller
 	//returns all plots contained in the box formed by the two points [minLat, minLng] and [maxLat, maxLng]
 		$em = $this->getDoctrine()->getManager();
 		$query = $em->createQuery(
-		    'SELECT plot.lat, plot.lng, plot.name, plot.note, media.path
+		    'SELECT plot.lat, plot.lng, plot.name, plot.note, media.path, plot.id
 		    FROM AppBundle\Entity\Plot plot LEFT JOIN AppBundle\Entity\Media media
 		    WITH plot.id = media.plot
 		    WHERE plot.lat > :minLat
@@ -182,10 +194,11 @@ class PlotController extends Controller
 
 		foreach($plots as $index => $plot) {
 		
-			$plots[$index]["html"] = $this->renderView("plot.html.twig", array(
+			$plots[$index]["html"] = $this->renderView("page/user-map/plotPopup.html.twig", array(
 				"description" => $plot["note"],
 				"picture" => $plot["path"],
-				"name" => $plot["name"]
+				"name" => $plot["name"],
+				"id" => $plot["id"]
 			)); 
 		}
 		
