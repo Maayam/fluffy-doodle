@@ -131,7 +131,7 @@ function popFormOnClick(){
 			'data': coords,
 		}).done(function(data){
 			//when got the form, append it in the marker popup
-			marker.bindPopup(data).openPopup();
+			marker.bindPopup(data, {maxWidth: "auto"}).openPopup();
 
 			var newName, newNote; //I need those variables global
 
