@@ -44,7 +44,6 @@ class PlotController extends Controller
 	    if ($form->isSubmitted() && $form->isValid()) {
 	        // $form->getData() holds the submitted values
 	        // but, the original `$plot` variable has also been updated
-
 	        $plot = $form->getData();
 	        
 	        //If a picture was uploaded
@@ -61,7 +60,7 @@ class PlotController extends Controller
 	        
 	        $html = $this->renderView("plot.html.twig", array(
 				"description" => $plot->getNote(),
-				"picture" => $plot->getPictures()[0],
+				"picture" => $plot->getPictures()[0]->getPath(),
 				"name" => $plot->getName()
 			));
 	        
