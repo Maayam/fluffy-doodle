@@ -6,7 +6,7 @@
 
 #userMap{
 	position:absolute;
-	top:0;
+	top:50px;
 	right:0;
 	bottom:0;
 	left:0;
@@ -17,6 +17,7 @@
 	margin:0;
 	border:none;
 	z-index:2;
+	border-radius:0px;
 }
 
 .slider{
