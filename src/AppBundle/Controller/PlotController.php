@@ -177,7 +177,7 @@ class PlotController extends Controller
 		$em = $this->getDoctrine()->getManager();
 
 		$query = $em->createQuery(
-			'SELECT plot.lat, plot.lng, plot.name, plot.note, media.path
+			'SELECT plot.lat, plot.lng, plot.name, plot.note, media.path, plot.id
 			FROM AppBundle\Entity\Plot plot, AppBundle\Entity\Media media
 			WHERE plot.name LIKE :name 
 			AND media.plot = plot.id'
