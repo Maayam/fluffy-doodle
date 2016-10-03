@@ -183,9 +183,9 @@ class PlotController extends Controller
 
 		$query = $em->createQuery(
 			'SELECT plot.lat, plot.lng, plot.name, plot.note, media.path, plot.id
-			FROM AppBundle\Entity\Plot plot, AppBundle\Entity\Media media
-			WHERE plot.name LIKE :name 
-			AND media.plot = plot.id'
+			FROM AppBundle\Entity\Plot plot LEFT JOIN AppBundle\Entity\Media media
+			WITH plot.id = media.plot
+			WHERE plot.name LIKE :name'
 		)->setParameters(array('name' => "%". $name."%"));
 
 		$plots = $query->getResult();
