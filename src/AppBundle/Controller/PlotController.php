@@ -69,9 +69,14 @@ class PlotController extends Controller
 	        $em->persist($plot);
 	        $em->flush(); //just like in debug_testCreateAction
 	        
+	        $picture = null;
+	        
+	        if(isset($plot->getPictures()[0]))
+	        	$pictures = $plot->getPictures()[0];
+	        
 	        $html = $this->renderView("page/user-map/plotPopup.html.twig", array(
 				"description" => $plot->getNote(),
-				"picture" => $plot->getPictures()[0]->getPath(),
+				"picture" => $pictures,
 				"name" => $plot->getName(),
 				"id" => $plot->getId()
 			));
