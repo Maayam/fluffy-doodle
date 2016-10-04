@@ -1,9 +1,12 @@
+<div style="min-width:300px;">
 <h3>{{ name }}</h3>
 
+<div>
 {% if picture %}
-	<a href="{{ pictures_dir }}/{{ picture }}"><img src="{{ thumbs_dir }}/{{ picture }}.png"></a>
+	<a href="{{ pictures_dir }}/{{ picture }}"><img style="display:block; margin-left:auto; margin-right:auto;" src="{{ thumbs_dir }}/{{ picture }}.png"></a>
 {% endif %}
-
+</div>
 <p>{{ description }}</p>
 <hr/>
 <a href="/view/plot/{{ id }}">View&nbsp;more</a>
+</div>

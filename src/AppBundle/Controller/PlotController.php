@@ -25,8 +25,29 @@ class PlotController extends Controller
 	 *@Method({"GET"})
 	 */
 	public function viewPlot(Request $request, $id) {
+	
+		$em = $this->getDoctrine()->getManager();
+		$query = $em->createQuery(
+			'SELECT plot
+			FROM AppBundle\Entity\Plot plot
+			WHERE plot.id = :id'
+		)->setParameters(array('id'=>$id));
+		
+		$plot = $query->getResult()[0];
+		
+		$pictures = [];
+		
+		foreach($plot->getPictures() as $media) {
+			$pictures[] = $media->getPath();
+		}
+		
 		return $this->render('page/plotView.html.twig', array(
-			"id"=>$id,
+			"id" => $plot->getId(),
+			"pictures" => $pictures,
+			"note" => $plot->getNote(),
+			"name" => $plot->getName(),
+			"lat" => $plot->getLat(),
+			"lng" => $plot->getLng()
 		));
 	} 
 
@@ -72,7 +93,7 @@ class PlotController extends Controller
 	        $picture = null;
 	        
 	        if(isset($plot->getPictures()[0]))
-	        	$pictures = $plot->getPictures()[0];
+	        	$pictures = $plot->getPictures()[0]->getPath();
 	        
 	        $html = $this->renderView("page/user-map/plotPopup.html.twig", array(
 				"description" => $plot->getNote(),
