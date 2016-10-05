@@ -90,7 +90,7 @@ class PlotController extends Controller
 	        $em->persist($plot);
 	        $em->flush(); //just like in debug_testCreateAction
 	        
-	        $picture = null;
+	        $pictures = null;
 	        
 	        if(isset($plot->getPictures()[0]))
 	        	$pictures = $plot->getPictures()[0]->getPath();
