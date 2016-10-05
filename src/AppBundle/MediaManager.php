@@ -17,7 +17,7 @@ class MediaManager extends Controller
 	}
 	
 	
-	protected function get($service) {
+	public function get($service) {
 		return $this->container->get($service);
 	}
 	
