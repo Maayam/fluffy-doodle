@@ -27,5 +27,53 @@ function initmap() {
 	L.marker(home, optionsMarker).addTo(map);
 }
 
-initmap();
+function initCarousel() {
+	$('#lightSlider').lightSlider({
+		loop:true,
+		slideMargin: 0,
+		pager: false,
+		loop:false,
+		item:5,
+		prevHtml:'<img src="/images/prev.png"/>',
+		nextHtml:'<img src="/images/next.png"/>',
+		responsive: [
+			{
+				breakpoint: 1000,
+				settings: {
+					item: 4,
+				}
+			},
+			{
+				breakpoint: 800,
+				settings: {
+					item: 3,
+				}
+			},
+			{
+				breakpoint: 600,
+				settings: {
+					item: 2,
+				}
+			},
+			{
+				breakpoint: 400,
+				settings: {
+					item: 1,
+				}
+			}
+		]
+	});
+}
+
+$(document).ready(function () {
+	initCarousel();
+	initmap();
+});
+
+	$(".thumbnail").click(function () {
+		var path = $(this).data('path')
+		console.log(path);
+		$(".img-plot").attr('src', path);
+	});
+
 

@@ -42,9 +42,17 @@
 		{{ note }}
 	</div>
 	<div id="plot-image">
-		<img class="img-plot" src="/uploads/pictures/{{ pictures[0] }}">
+		<img class="img-plot img-responsive" src="/uploads/pictures/{{ pictures[0] }}"/>
 	</div>
-
+	<div id="gallery">
+		<ul id="lightSlider">
+			{% for picture in pictures %}
+				<li>
+					<img class="thumbnail" data-path="/uploads/pictures/{{ picture }}" src="/uploads/pictures/thumbs/{{ picture }}.png" />
+				</li>
+			{% endfor %}
+		</ul>
+	</div>
 	<div id="map-plot">
 
 	</div>
@@ -62,6 +70,7 @@
 	
 	{# PLOTVIEW #}
 	<link rel="stylesheet" href="{{ asset('css/plotview.css') }}" />
+	<link type="text/css" rel="stylesheet" href="{{ asset('css/lightslider.min.css') }}" />
 {% endblock %}
 
 {% block footerScripts %}
@@ -69,4 +78,6 @@
 	<script type="text/javascript" src="{{ asset('js/leaflet.js') }}"></script>
 	{# JS #}
 	<script type="text/javascript" src="{{ asset('js/plotview.js') }}"></script>
+	
+	<script type="text/javascript" src="{{ asset('js/lightslider.min.js') }}"></script>
 {% endblock %}
