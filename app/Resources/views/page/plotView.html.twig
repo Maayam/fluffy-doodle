@@ -42,7 +42,9 @@
 		{{ note }}
 	</div>
 	<div id="plot-image">
-		<img class="img-plot img-responsive" src="/uploads/pictures/{{ pictures[0] }}"/>
+		{% if pictures %}
+			<img class="img-plot img-responsive" src="/uploads/pictures/{{ pictures[0] }}"/>
+		{% endif %}
 	</div>
 	<div id="gallery">
 		<ul id="lightSlider">
