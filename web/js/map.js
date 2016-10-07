@@ -70,7 +70,12 @@ function updateDots(plotList) {
 		plotmark.data=plot;
 		map.addLayer(plotmark);
 
-		plotmark = plotmark.bindPopup(plot.html, {maxWidth: "auto"}).update();
+		var popupOptions = {
+			maxWidth: "auto",
+			autoPan: false
+		};
+
+		plotmark = plotmark.bindPopup(plot.html, popupOptions).update();
 		plotlayers.push(plotmark);
 	}
 }
@@ -131,7 +136,12 @@ function popFormOnClick(){
 			'data': coords,
 		}).done(function(data){
 			//when got the form, append it in the marker popup
-			marker.bindPopup(data, {maxWidth: "auto"}).openPopup();
+			var popupOptions = {
+				maxWidth: "auto",
+				autoPan: false //Disable panning, prevent the popup from closing
+							   //when panning is done
+			};
+			marker.bindPopup(data, popupOptions).openPopup();
 
 			var newName, newNote; //I need those variables global
 
