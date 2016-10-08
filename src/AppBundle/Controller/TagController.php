@@ -9,11 +9,19 @@ use Symfony\Component\HttpFoundation\Request;
 use AppBundle\Entity\Tag;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
+/**
+ * A class managing tags
+ */
 class TagController extends Controller
 {
 	/**
-	 *@Route("/tag/search", name="findTag")
-	 *@Method({"GET"})
+	 * Router for finding tags
+	 *
+	 * @param $request The HTML request
+	 * @return JSON representation of the tags matching the research
+	 *
+	 * @Route("/tag/search", name="findTag")
+	 * @Method({"GET"})
 	 */
 	public function findTags(Request $request){
 		$filter = $request->query->get('filter');
@@ -24,6 +32,12 @@ class TagController extends Controller
 		return new JsonResponse($tags);
 	}
 
+	/**
+	 * Find all tags matching with a name
+	 *
+	 * @param $name The name to match with
+	 * @return All matching tags
+	 */
 	private function findByName($name) {
 	//returns all plots which match with a name
 		$em = $this->getDoctrine()->getManager();

@@ -16,11 +16,19 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 
+/**
+ * A class managing users
+ */
 class UserController extends Controller
 {
 	/**
-	 *@Route("/user/add", name="addUser")
-	 *@Method({"POST"})
+	 * Create a new user from a submitted form
+	 *
+	 * @param $request The HTML request
+	 * @return JSON containing the operation result
+	 *
+	 * @Route("/user/add", name="addUser")
+	 * @Method({"POST"})
 	 */
     public function postUser(Request $request){
         // create a user
@@ -49,8 +57,13 @@ class UserController extends Controller
     }
 
 	/**
-	 *@Route("/signup", name="signupForm")
-	 *@Method({"GET"})
+	 * Create a form to create an user
+	 *
+	 * @param $request The HTML request
+	 * @return The HTML form to create an user 
+	 *
+	 * @Route("/signup", name="signupForm")
+	 * @Method({"GET"})
 	 */
 	public function getUserForm(Request $request){
         // create a plot and give it the coords where the user clicked

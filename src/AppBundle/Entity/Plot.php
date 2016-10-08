@@ -8,45 +8,68 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
+ * A class representing a dancing spot
+ *
  * @ORM\Entity
  * @ORM\Table(name="plot")
  */
 
 class Plot
 {
-    /**
-     * @ORM\Column(type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
+	/**
+	 * @var integer $id The id of the plot
+	 *
+	 * @ORM\Column(type="integer")
+	 * @ORM\Id
+	 * @ORM\GeneratedValue(strategy="AUTO")
+	 */
 	private $id;
 
-	/** @ORM\Column(type="decimal", precision=10, scale=6)
+	/** 
+	 * @var float $lat Latitude of the plot
+	 *
+	 * @ORM\Column(type="decimal", precision=10, scale=6)
 	 */
 	private $lat;
 
-	/** @ORM\Column(type="decimal", precision=10, scale=6)
+	/** 
+	 * @var float $lng Longitude of the plot
+	 *
+	 * @ORM\Column(type="decimal", precision=10, scale=6)
 	 */
 	private $lng;
 
-	/** @ORM\Column(length=63)
+	/**
+	 * @var string $name The name of the plot
+	 *
+	 * @ORM\Column(length=63)
 	 */
 	private $name;
 
-	/** @ORM\Column(type="text")
+	/** 
+	 * @var string $note The description of the plot
+	 **
+	 * @ORM\Column(type="text")
 	 */
 	private $note;
 
-    /**
-     * @ORM\ManyToMany(targetEntity="Tag")
-     */
-    private $tags;
+	/**
+	 * @ORM\ManyToMany(targetEntity="Tag")
+	 *
+	 * @var array $tags Tags associated with the plot
+	 */
+	private $tags;
 
+	/**
+	 * @var resource $file A value used to upload an image
+	 */
 	private $file;
 
 	/**
-	* @ORM\OneToMany(targetEntity="Media", mappedBy="plot")
-	*/
+	 * @var array $pictures Picture associated with the plot
+	 *
+	 * @ORM\OneToMany(targetEntity="Media", mappedBy="plot")
+	 */
 	private $pictures;
 
 	public function __construct() {

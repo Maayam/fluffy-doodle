@@ -5,29 +5,38 @@ namespace AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * A class representing a media, which is mostly images
+ *
  * @ORM\Entity
  * @ORM\Table(name="media")
  */
 
 class Media
 {
-    	/**
-     	 * @ORM\Column(type="integer")
-     	 * @ORM\Id
-     	 * @ORM\GeneratedValue(strategy="AUTO")
-     	 **/
+	/**
+	 * @var integer $id The id of the media
+	 *
+	 * @ORM\Column(type="integer")
+	 * @ORM\Id
+	 * @ORM\GeneratedValue(strategy="AUTO")
+	 */
 	private $id;
 
 	/**
+	 * @var integer $path The filename of the media
+	 *
 	 * @ORM\Column(type="string", length=250)
-	 **/
+	 */
 	private $path;
 
 
 	/**
+	 * @var object $plot The plot associated with the media
+	 *
 	 * @ORM\ManyToOne(targetEntity="Plot", inversedBy="pictures", cascade={"persist"})
 	 * @ORM\JoinColumn(name="plot_id", referencedColumnName="id")
-	 **/
+	 *
+	 */
 	private $plot;
 
 	///////////////////////

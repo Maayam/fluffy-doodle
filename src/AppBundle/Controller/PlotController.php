@@ -16,13 +16,22 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 
+/**
+ * A class managing plots
+ */
 class PlotController extends Controller
 {
 
 
 	/**
-	 *@Route("/view/plot/{id}", name="showPlot")
-	 *@Method({"GET"})
+	 * Render a plot page
+	 *
+	 * @param $request The HTML request
+	 * @param $id The id of the plot to render
+	 * @return The rendered page
+	 *
+	 * @Route("/view/plot/{id}", name="showPlot")
+	 * @Method({"GET"})
 	 */
 	public function viewPlot(Request $request, $id) {
 	
@@ -52,13 +61,22 @@ class PlotController extends Controller
 	} 
 
 	/**
-	 *@Route("/plot", name="postPlot")
-	 *@Method({"POST"})
+	 * Create a plot from a submitted form
+	 *
+	 * Meant to respond to an AJAX request
+	 *
+	 * @param $request The HTML request
+	 * @return JSON containing the created plot informations
+	 *
+	 * @Route("/plot", name="postPlot")
+	 * @Method({"POST"})
 	 */
     public function postPlot(Request $request){
-    //meant to respond to AJAX. returns the HTML form to create a plot as response
         // create a plot
         $plot = new Plot();
+        
+        if(!$request->isXmlHttpRequest())
+        	return;
 
         //build the form
         $form = $this->createFormBuilder($plot)
@@ -110,11 +128,21 @@ class PlotController extends Controller
     }
 
 	/**
-	 *@Route("/plot/form", name="getPlotForm")
-	 *@Method({"GET"})
+	 * Create a form to create a plot
+	 *
+	 * Meant to respond to an AJAX request
+	 *
+	 * @param $request The HTML request
+	 * @return The HTML form to create a plot
+	 * 
+	 * @Route("/plot/form", name="getPlotForm")
+	 * @Method({"GET"})
 	 */
 	public function getPlotForm(Request $request){
-    //meant to respond to AJAX. returns the HTML form to create a plot as response
+
+		if(!$request->isXmlHttpRequest())
+			return;
+
 		$lat = $request->query->get('lat');
 		$lng = $request->query->get('lng');
 
@@ -150,8 +178,13 @@ class PlotController extends Controller
 	}
 
 	/**
-	 *@Route("/plot/search", name="findPlot")
-	 *@Method({"GET"})
+	 * Router for finding functions
+	 *
+	 * @param $request The HTML request
+	 * @return JSON representation of the plots matching the research
+	 *
+	 * @Route("/plot/search", name="findPlot")
+	 * @Method({"GET"})
 	 */
 	public function findPlots(Request $request){
 		$filter = $request->query->get('filter');
@@ -176,8 +209,17 @@ class PlotController extends Controller
 		return new JsonResponse($this->createPlotHtml($plots));
 	}
 
+	/**
+	 * Find all plots contained in a certain space
+	 *
+	 * The space is formed by two points [minLat, minLng] and 
+	 * [maxLat, maxLng]
+	 *
+	 * @param $box The containing space
+	 * @return All plots contained in the box
+	 */
 	private function findInBox($box){
-	//returns all plots contained in the box formed by the two points [minLat, minLng] and [maxLat, maxLng]
+
 		$em = $this->getDoctrine()->getManager();
 		$query = $em->createQuery(
 		    'SELECT plot.lat, plot.lng, plot.name, plot.note, media.path, plot.id
@@ -198,8 +240,13 @@ class PlotController extends Controller
 		return $plots;
 	}
 
+	/**
+	 * Find all plots matching with a name
+	 *
+	 * @param $name The name to match with
+	 * @return All matching plots
+	 */
 	private function findByName($name) {
-	//returns all plots which match with a name
 		$em = $this->getDoctrine()->getManager();
 
 		$query = $em->createQuery(
@@ -213,6 +260,12 @@ class PlotController extends Controller
 		return $plots;
 	}
 	
+	/**
+	 * Create the HTML for the popup associated with the plot on the map
+	 *
+	 * @param $plots The plots meant to be drawn on the map
+	 * @return All plots with the generated popup HTML
+	 */
 	private function createPlotHtml($plots) {
 
 		if($plots == null)

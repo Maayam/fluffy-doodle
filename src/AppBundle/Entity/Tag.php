@@ -5,6 +5,8 @@ namespace AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * A class representing a Tag
+ *
  * @ORM\Entity
  * @ORM\Table(name="tag")
  */
@@ -12,17 +14,24 @@ use Doctrine\ORM\Mapping as ORM;
 class Tag
 {
     /**
+     * @var integer $id The id of the tag
+     *
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
 	private $id;
 
-	/** @ORM\Column(length=31)
+	/** 
+	 * @var string $name The name of the tag
+	 *
+	 * @ORM\Column(length=31)
 	 */
 	private $name;
 
     /**
+     * @var array $plots Plots associated with the tag
+     *
      * @ORM\ManyToMany(targetEntity="Plot")
      */
     private $plots;

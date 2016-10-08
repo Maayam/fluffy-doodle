@@ -9,6 +9,9 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 use AppBundle\Entity\Media;
 
+/**
+ * A service to manage media and especially images
+ */
 class MediaManager extends Controller
 {	
 
@@ -20,7 +23,13 @@ class MediaManager extends Controller
 	public function get($service) {
 		return $this->container->get($service);
 	}
-	
+
+	/**
+	 * Add a media to a plot
+	 *
+	 * @param $plot The plot which will be associated with the media
+	 * @return The created media
+	 */	
 	public function addMedia($plot) {
 		$media = new Media();
 		
@@ -46,6 +55,12 @@ class MediaManager extends Controller
 		return $media;
 	}
 	
+	/**
+	 * Generate a thumbnail from an uploaded file
+	 *
+	 * @param $file The uploaded file
+	 * @param $filename The filename associated with the file
+	 */
 	private function generateThumbnail($file, $filename) {
 		$height = $this->getParameter('thumbs_height');
 		$width = $this->getParameter('thumbs_width');
