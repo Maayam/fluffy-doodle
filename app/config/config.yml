@@ -39,6 +39,7 @@ twig:
     globals:
         thumbs_dir: /uploads/pictures/thumbs
         pictures_dir: /uploads/pictures
+    form_themes: ['bootstrap_3_layout.html.twig']
 
 # Doctrine Configuration
 doctrine:
