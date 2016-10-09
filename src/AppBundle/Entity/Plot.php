@@ -108,6 +108,10 @@ class Plot
 	public function getFile() {
 		return $this->file;
 	}
+	
+	public function getTags() {
+		return $this->tags;
+	}
 
 	/////////////////////
 	//SETTERS
@@ -143,5 +147,9 @@ class Plot
 
 	public function setFile($file) {
 		$this->file = $file;
+	}
+	
+	public function setTags($tags) {
+		$this->tags = $tags;
 	}
 }
