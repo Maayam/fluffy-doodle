@@ -7,7 +7,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use AppBundle\Entity\Plot;
-use AppBundle\Form\PlotType;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
@@ -85,6 +84,7 @@ class PlotController extends Controller
 	        ->add('Name', TextType::class )
 	        ->add('Note', TextareaType::class )
 	        ->add('File', FileType::class, array('label'=>'Picture', 'required'=>false))
+	        ->add('Tags', TextType::class, array('required'=>false))
             ->add('save', SubmitType::class, array('label' => 'Create Plot'))
             ->getForm();
 
@@ -168,12 +168,12 @@ class PlotController extends Controller
 	        ->add('Name', TextType::class )
 	        ->add('Note', TextareaType::class )
 	        ->add('File', FileType::class, array('label'=>'Picture', 'required'=>false))
+	        ->add('Tags', TextType::class, array('required'=>false, 'attr'=>array('placeholder'=>'Enter commas separated tags')))
             ->add('save', SubmitType::class, array('label' => 'Create Plot'))
             ->getForm();
 
         return $this->render('page/plotForm.html.twig', array(
             'form' => $plotForm->createView(),
-            'tags' => $tag_list
 		));
 	}
 
