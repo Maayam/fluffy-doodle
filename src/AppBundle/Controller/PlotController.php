@@ -36,35 +36,11 @@ class PlotController extends Controller
 	 */
 	public function viewPlot(Request $request, $id) {
 	
-		$em = $this->getDoctrine()->getManager();
-		$query = $em->createQuery(
-			'SELECT plot
-			FROM AppBundle\Entity\Plot plot
-			WHERE plot.id = :id'
-		)->setParameters(array('id'=>$id));
+		$em = $this->getDoctrine()->getManager()->getRepository('AppBundle\Entity\Plot');
 		
-		$plot = $query->getResult()[0];
+		$plot = $em->findOneById($id);
 		
-		$pictures = [];
-		$tags = [];
-		
-		foreach($plot->getPictures() as $media) {
-			$pictures[] = $media->getPath();
-		}
-		
-		foreach($plot->getTags() as $tag) {
-			$tags[] = array("name"=>$tag->getName(), "id"=>$tag->getId());
-		}
-		
-		return $this->render('page/plotView.html.twig', array(
-			"id" => $plot->getId(),
-			"pictures" => $pictures,
-			"note" => $plot->getNote(),
-			"name" => $plot->getName(),
-			"lat" => $plot->getLat(),
-			"lng" => $plot->getLng(),
-			"tags" => $tags
-		));
+		return $this->render('page/plotView.html.twig', array("plot"=>$plot));
 	} 
 
 	/**
@@ -120,12 +96,14 @@ class PlotController extends Controller
 			foreach($tagsName as $tagName) {
 				$tmp = $em->getRepository('AppBundle\Entity\Tag')->findOneByName($tagName);
 				
-				if($tmp == null) {
-					$tag = new Tag();
-					$tag->setName($tagName);
-					$tags->add($tag);
-				} else {
-					$tags->add($tmp);
+				if($tagName != "") {
+					if($tmp == null) {
+						$tag = new Tag();
+						$tag->setName($tagName);
+						$tags->add($tag);
+					} else {
+						$tags->add($tmp);
+					}
 				}
 			}
 
@@ -135,17 +113,7 @@ class PlotController extends Controller
 	        $em->persist($plot);
 	        $em->flush(); //just like in debug_testCreateAction
 	        
-	        $pictures = null;
-	        
-	        if(isset($plot->getPictures()[0]))
-	        	$pictures = $plot->getPictures()[0]->getPath();
-	        
-	        $html = $this->renderView("page/user-map/plotPopup.html.twig", array(
-				"description" => $plot->getNote(),
-				"picture" => $pictures,
-				"name" => $plot->getName(),
-				"id" => $plot->getId()
-			));
+	        $html = $this->renderView("page/user-map/plotPopup.html.twig", array("plot"=>$plot));
 	        
 	        return new JsonResponse(array('success' => true, 'html'=>$html));
 	    }
@@ -304,11 +272,7 @@ class PlotController extends Controller
 
 		foreach($plots as $index => $plot) {
 		
-			$plots[$index]["html"] = $this->renderView("page/user-map/plotPopup.html.twig", array(
-				"description" => $plot["note"],
-				"picture" => $plot["path"],
-				"name" => $plot["name"],
-				"id" => $plot["id"]
+			$plots[$index]["html"] = $this->renderView("page/user-map/plotPopup.html.twig", array("plot"=>$plot
 			)); 
 		}
 		

@@ -1,12 +1,12 @@
 <div style="min-width:300px;">
-<h3>{{ name }}</h3>
+<h3>{{ plot.name }}</h3>
 
 <div>
-{% if picture %}
-	<a href="{{ pictures_dir }}/{{ picture }}"><img style="display:block; margin-left:auto; margin-right:auto;" src="{{ thumbs_dir }}/{{ picture }}.png"></a>
+{% if plot.path %}
+	<a href="{{ pictures_dir }}/{{ plot.path }}"><img style="display:block; margin-left:auto; margin-right:auto;" src="{{ thumbs_dir }}/{{ plot.path }}.png"></a>
 {% endif %}
 </div>
-<p>{{ description }}</p>
+<p>{{ plot.note }}</p>
 <hr/>
-<a href="/view/plot/{{ id }}">View&nbsp;more</a>
+<a href="/view/plot/{{ plot.id }}">View&nbsp;more</a>
 </div>

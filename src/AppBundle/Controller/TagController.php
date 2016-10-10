@@ -26,7 +26,13 @@ class TagController extends Controller
 	 * @Method({"GET"})
 	 */
 	public function viewTag(Request $request, $id) {
-		return $this->render('page/tagView.html.twig', array("id"=>$id));
+		$em = $this->getDoctrine()->getManager()->getRepository('AppBundle\Entity\Tag');
+		
+		$tag = $em->findOneById($id);
+		
+		$plots = $tag->getPlots();
+		
+		return $this->render('page/tagView.html.twig', array("tag"=>$tag));
 	}
 	
 	/**

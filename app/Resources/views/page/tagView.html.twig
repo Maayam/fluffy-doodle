@@ -34,6 +34,11 @@
 </nav>
 
 <div class="container">
-	<p>I'm the tag id : {{ id }}</p>
+	<h1>{{ tag.name }}</h1>
+	<ul>
+		{% for plot in tag.plots %}
+			<li><a href="/view/plot/{{ plot.id }}"><img src="/uploads/pictures/thumbs/{{ plot.pictures[0].path }}.png"> {{ plot.name }}</a></li>
+		{% endfor %}
+	</ul>
 </div>	
 {% endblock %}

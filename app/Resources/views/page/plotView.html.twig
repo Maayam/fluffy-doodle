@@ -35,27 +35,27 @@
 
 <div class="container">
 
-	<div id="plot-header" data-lng="{{ lng }}" data-lat="{{ lat }}">
-		<h1>{{ name }}</h1>		
+	<div id="plot-header" data-lng="{{ plot.lng }}" data-lat="{{ plot.lat }}">
+		<h1>{{ plot.name }}</h1>		
 	</div>
 	<div id="plot-note">
-		{{ note }}
+		{{ plot.note }}
 	</div>
 	<div id="plot-tags">
-		{% for tag in tags %}
+		{% for tag in plot.tags %}
 			<a href="/view/tag/{{ tag.id }}"><span class="label label-primary"># {{ tag.name }}</span></a>
 		{% endfor %}
 	</div>
 	<div id="plot-image">
-		{% if pictures %}
-			<img class="img-plot img-responsive" src="/uploads/pictures/{{ pictures[0] }}"/>
+		{% if plot.pictures %}
+			<img class="img-plot img-responsive" src="/uploads/pictures/{{ plot.pictures[0].path }}"/>
 		{% endif %}
 	</div>
 	<div id="gallery">
 		<ul id="lightSlider">
-			{% for picture in pictures %}
+			{% for picture in plot.pictures %}
 				<li>
-					<img class="thumbnail" data-path="/uploads/pictures/{{ picture }}" src="/uploads/pictures/thumbs/{{ picture }}.png" />
+					<img class="thumbnail" data-path="/uploads/pictures/{{ picture.path }}" src="/uploads/pictures/thumbs/{{ picture.path }}.png" />
 				</li>
 			{% endfor %}
 		</ul>
