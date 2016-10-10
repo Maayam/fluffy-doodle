@@ -47,7 +47,7 @@
 		{% endfor %}
 	</div>
 	<div id="plot-image">
-		{% if plot.pictures %}
+		{% if not plot.pictures is empty %}
 			<img class="img-plot img-responsive" src="/uploads/pictures/{{ plot.pictures[0].path }}"/>
 		{% endif %}
 	</div>
