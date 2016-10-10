@@ -57,7 +57,7 @@ function askForPlots() {
 
 function updateDots(plotList) {
 	removeMarkers();
-
+	
 	for( i=0; i < plotList.length; i++ ) {
 		//coords are supposed to be decimals!
 		var plot = plotList[i];

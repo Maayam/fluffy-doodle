@@ -218,24 +218,18 @@ class PlotController extends Controller
 	 * @return All plots contained in the box
 	 */
 	private function findInBox($box){
-
-		$em = $this->getDoctrine()->getManager();
-		$query = $em->createQuery(
-		    'SELECT plot.lat, plot.lng, plot.name, plot.note, media.path, plot.id
-		    FROM AppBundle\Entity\Plot plot LEFT JOIN AppBundle\Entity\Media media
-		    WITH plot.id = media.plot
-		    WHERE plot.lat > :minLat
-		    AND plot.lat < :maxLat
-		    AND plot.lng > :minLng
-		    AND plot.lng < :maxLng'
-		)->setParameters(array(
-			'minLat' => $box['minLat'],
-			'minLng' => $box['minLng'],
-			'maxLat' => $box['maxLat'],
-			'maxLng' => $box['maxLng']
-		));
-
-		$plots = $query->getResult();
+		
+		$em = $this->getDoctrine()->getManager()->getRepository('AppBundle\Entity\Plot')->createQueryBuilder('p');
+		
+		$plots = $em->select('p')
+					->where('p.lat > :minLat')
+					->andWhere('p.lat < :maxLat')
+					->andWhere('p.lng > :minLng')
+					->andWhere('p.lng < :maxLng')
+					->setParameters($box)
+					->getQuery()
+					->getResult();
+		
 		return $plots;
 	}
 
@@ -246,16 +240,16 @@ class PlotController extends Controller
 	 * @return All matching plots
 	 */
 	private function findByName($name) {
-		$em = $this->getDoctrine()->getManager();
-
-		$query = $em->createQuery(
-			'SELECT plot.lat, plot.lng, plot.name, plot.note, media.path, plot.id
-			FROM AppBundle\Entity\Plot plot LEFT JOIN AppBundle\Entity\Media media
-			WITH plot.id = media.plot
-			WHERE plot.name LIKE :name'
-		)->setParameters(array('name' => "%". $name."%"));
-
-		$plots = $query->getResult();
+		
+		$em = $this->getDoctrine()->getManager()->getRepository('AppBundle\Entity\Plot')->createQueryBuilder('p');
+		
+		$plots = $em->select('p')
+					->where('p.name LIKE :name')
+					->setParameter(array('name'=>$name))
+					->getQuery()
+					->getResult();
+		
+		
 		return $plots;
 	}
 	
@@ -269,13 +263,15 @@ class PlotController extends Controller
 
 		if($plots == null)
 			return null;
-
+		$html = [];
 		foreach($plots as $index => $plot) {
-		
-			$plots[$index]["html"] = $this->renderView("page/user-map/plotPopup.html.twig", array("plot"=>$plot
+			$html[$index] = [];
+			$html[$index]['lat'] = $plot->getLat();
+			$html[$index]['lng'] = $plot->getLng();
+			$html[$index]["html"] = $this->renderView("page/user-map/plotPopup.html.twig", array("plot"=>$plot
 			)); 
 		}
 		
-		return $plots;
+		return $html;
 	}
 } 

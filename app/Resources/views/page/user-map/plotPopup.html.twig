@@ -2,8 +2,8 @@
 <h3>{{ plot.name }}</h3>
 
 <div>
-{% if plot.path %}
-	<a href="{{ pictures_dir }}/{{ plot.path }}"><img style="display:block; margin-left:auto; margin-right:auto;" src="{{ thumbs_dir }}/{{ plot.path }}.png"></a>
+{% if plot.pictures %}
+	<a href="{{ pictures_dir }}/{{ plot.pictures[0].path }}"><img style="display:block; margin-left:auto; margin-right:auto;" src="{{ thumbs_dir }}/{{ plot.pictures[0].path }}.png"></a>
 {% endif %}
 </div>
 <p>{{ plot.note }}</p>
