@@ -35,10 +35,18 @@
 
 <div class="container">
 	<h1>{{ tag.name }}</h1>
-	<ul>
-		{% for plot in tag.plots %}
-			<li><a href="/view/plot/{{ plot.id }}"><img src="/uploads/pictures/thumbs/{{ plot.pictures[0].path }}.png"> {{ plot.name }}</a></li>
-		{% endfor %}
-	</ul>
+	<div class="list-group">
+	{% for plot in tag.plots %}
+	<a href="/view/plot/{{ plot.id }}" class="list-group-item">
+		<h4 class="list-group-item-heading">{{ plot.name }}</h4>
+		<p class="list-group-item-text">
+			{% if not plot.pictures is empty %}
+				<img src="/uploads/pictures/thumbs/{{ plot.pictures[0].path }}.png" style="height:50px;"/>
+			{% endif %}
+			{{ plot.note }}
+		</p>
+	</a>
+    {% endfor %}
+  </div>
 </div>	
 {% endblock %}
