@@ -245,7 +245,7 @@ class PlotController extends Controller
 		
 		$plots = $em->select('p')
 					->where('p.name LIKE :name')
-					->setParameter(array('name'=>$name))
+					->setParameter('name', $name)
 					->getQuery()
 					->getResult();
 		
