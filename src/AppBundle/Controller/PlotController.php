@@ -7,6 +7,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use AppBundle\Entity\Plot;
+use AppBundle\Entity\Tag;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
@@ -14,6 +15,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * A class managing plots
@@ -44,9 +46,14 @@ class PlotController extends Controller
 		$plot = $query->getResult()[0];
 		
 		$pictures = [];
+		$tags = [];
 		
 		foreach($plot->getPictures() as $media) {
 			$pictures[] = $media->getPath();
+		}
+		
+		foreach($plot->getTags() as $tag) {
+			$tags[] = array("name"=>$tag->getName(), "id"=>$tag->getId());
 		}
 		
 		return $this->render('page/plotView.html.twig', array(
@@ -55,7 +62,8 @@ class PlotController extends Controller
 			"note" => $plot->getNote(),
 			"name" => $plot->getName(),
 			"lat" => $plot->getLat(),
-			"lng" => $plot->getLng()
+			"lng" => $plot->getLng(),
+			"tags" => $tags
 		));
 	} 
 
@@ -84,7 +92,7 @@ class PlotController extends Controller
 	        ->add('Name', TextType::class )
 	        ->add('Note', TextareaType::class )
 	        ->add('File', FileType::class, array('label'=>'Picture', 'required'=>false))
-	        ->add('Tags', TextType::class, array('required'=>false))
+	        ->add('Tags', TextType::class, array('required'=>false, 'mapped'=>false))
             ->add('save', SubmitType::class, array('label' => 'Create Plot'))
             ->getForm();
 
@@ -92,8 +100,8 @@ class PlotController extends Controller
 	    $form->handleRequest($request);
 
 	    if ($form->isSubmitted() && $form->isValid()) {
-	        // $form->getData() holds the submitted values
-	        // but, the original `$plot` variable has also been updated
+	        
+	        $em = $this->getDoctrine()->getManager();
 	        $plot = $form->getData();
 	        
 	        //If a picture was uploaded
@@ -102,9 +110,28 @@ class PlotController extends Controller
 	        	
 	        	$plot->addPicture($mediaManager->addMedia($plot));
 	        }
-	        // ... perform some action, such as saving the plot to the database
-	        // for example, if Plot is a Doctrine entity, save it!
-	        $em = $this->getDoctrine()->getManager();
+
+			$stringTag = $form->get('Tags')->getData();
+
+			$tagsName = array_map('trim', explode(',', $stringTag));
+
+			$tags = new ArrayCollection();
+			
+			foreach($tagsName as $tagName) {
+				$tmp = $em->getRepository('AppBundle\Entity\Tag')->findOneByName($tagName);
+				
+				if($tmp == null) {
+					$tag = new Tag();
+					$tag->setName($tagName);
+					$tags->add($tag);
+				} else {
+					$tags->add($tmp);
+				}
+			}
+
+			$plot->setTags($tags);
+
+	       
 	        $em->persist($plot);
 	        $em->flush(); //just like in debug_testCreateAction
 	        
@@ -168,7 +195,11 @@ class PlotController extends Controller
 	        ->add('Name', TextType::class )
 	        ->add('Note', TextareaType::class )
 	        ->add('File', FileType::class, array('label'=>'Picture', 'required'=>false))
-	        ->add('Tags', TextType::class, array('required'=>false, 'attr'=>array('placeholder'=>'Enter commas separated tags')))
+	        ->add('Tags', TextType::class, array(
+	        	'required'=>false, 
+	        	'mapped'=>false, 
+	        	'attr'=>array('placeholder'=>'Enter commas separated tags')
+	        ))
             ->add('save', SubmitType::class, array('label' => 'Create Plot'))
             ->getForm();
 

@@ -54,8 +54,11 @@ class Plot
 	private $note;
 
 	/**
-	 * @ORM\ManyToMany(targetEntity="Tag")
-	 *
+	 * @ORM\ManyToMany(targetEntity="Tag", inversedBy="plots", cascade={"persist", "merge"})
+	 * @ORM\JoinTable(
+	 *	joinColumns={@ORM\JoinColumn(name="Plot_idPlot", referencedColumnName="id")},
+	 *	inverseJoinColumns={@ORM\JoinColumn(name="Tag_idTag", referencedColumnName="id")}
+	 * )
 	 * @var array $tags Tags associated with the plot
 	 */
 	private $tags;
@@ -148,8 +151,21 @@ class Plot
 	public function setFile($file) {
 		$this->file = $file;
 	}
-	
+
+	public function addTag($tag) {
+		if(!$this->tags->contains($tag))
+			$this->tags->add($tag);	
+	}
+
 	public function setTags($tags) {
-		$this->tags = $tags;
+		if($tags instanceof ArrayCollection || is_array($tags)) {
+			foreach($tags as $tag) {
+				$this->addTag($tag);
+			}
+		} elseif($tags instanceof Tag) {
+			$this->addTag($tags);
+		} else {
+			throw new Exception("$tags must be an instance of Tag or ArrayCollection ");
+		}
 	}
 }

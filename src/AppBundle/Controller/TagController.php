@@ -14,6 +14,21 @@ use Symfony\Component\HttpFoundation\JsonResponse;
  */
 class TagController extends Controller
 {
+
+	/**
+	 * Render a tag page, listing all plot related to this tag
+	 *
+	 * @param $request The HTML request
+	 * @param $id The id of the tag to render
+	 * @return The rendered page
+	 *
+	 * @Route("/view/tag/{id}", name="viewTag")
+	 * @Method({"GET"})
+	 */
+	public function viewTag(Request $request, $id) {
+		return $this->render('page/tagView.html.twig', array("id"=>$id));
+	}
+	
 	/**
 	 * Router for finding tags
 	 *

@@ -41,6 +41,11 @@
 	<div id="plot-note">
 		{{ note }}
 	</div>
+	<div id="plot-tags">
+		{% for tag in tags %}
+			<a href="/view/tag/{{ tag.id }}"><span class="label label-primary"># {{ tag.name }}</span></a>
+		{% endfor %}
+	</div>
 	<div id="plot-image">
 		{% if pictures %}
 			<img class="img-plot img-responsive" src="/uploads/pictures/{{ pictures[0] }}"/>

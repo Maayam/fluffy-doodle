@@ -25,14 +25,14 @@ class Tag
 	/** 
 	 * @var string $name The name of the tag
 	 *
-	 * @ORM\Column(length=31)
+	 * @ORM\Column(length=31, unique=true)
 	 */
 	private $name;
 
     /**
      * @var array $plots Plots associated with the tag
      *
-     * @ORM\ManyToMany(targetEntity="Plot")
+     * @ORM\ManyToMany(targetEntity="Plot", mappedBy="tags", cascade={"persist", "merge"})
      */
     private $plots;
 
@@ -52,6 +52,10 @@ class Tag
         return $this->name;
     }
 
+	public function getPlots() {
+		return $this->plots;
+	}
+
     /////////////////////
     //SETTERS
     /////////////////////
@@ -62,5 +66,25 @@ class Tag
 
     public function setName($name){
         $this->name = $name;
+    }
+ 
+ 	public function addPlot($plot) {
+ 		if(!$this->plots->contains($plot)) {
+ 			if(!$plot->getTags()->contains($this)) {
+ 				$plot->addTag($this);
+ 			}
+ 			$this->plot->add($plot);
+ 		}
+ 	}   
+    public function setPlot($plots) {
+    	if($plots instanceof ArrayCollection || is_array($plots)) {
+    		foreach($plots as $plot) {
+    			$this->addPlot($plot);
+    		}
+    	} elseif($plots instanceof Plot) {
+    		$this->addPlot($plots);
+    	} else {
+    		throw new Exception("$plots must be an instance of Plot or ArrayCollection");
+    	}
     }
 }
