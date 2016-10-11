@@ -186,24 +186,20 @@ class PlotController extends Controller
 	 * @Method({"GET"})
 	 */
 	public function findPlots(Request $request){
-		$filter = $request->query->get('filter');
 		
 		$plots = null;
-
-		if($filter == 'plotsInBox'){
-			$box = [
-				"minLat" => $request->query->get('minLat'),
+		$name = $request->query->get('search');
+		
+		$box = ["minLat" => $request->query->get('minLat'),
 				"minLng" => $request->query->get('minLng'),
 				"maxLat" => $request->query->get('maxLat'),
 				"maxLng" => $request->query->get('maxLng')
-			];
-			$plots = $this->findInBox($box);
-		}
-
-		if($filter == 'findByName'){
-			$name = $request->query->get('search');
-			$plots = $this->findByName($name);
-		}
+		];
+		
+		if($name != null)
+			$box['search'] = '%'.$name.'%';
+		
+		$plots = $this->findInBox($box);
 		
 		return new JsonResponse($this->createPlotHtml($plots));
 	}
@@ -221,14 +217,19 @@ class PlotController extends Controller
 		
 		$em = $this->getDoctrine()->getManager()->getRepository('AppBundle\Entity\Plot')->createQueryBuilder('p');
 		
-		$plots = $em->select('p')
+		$query = $em->select('p')
 					->where('p.lat > :minLat')
 					->andWhere('p.lat < :maxLat')
 					->andWhere('p.lng > :minLng')
-					->andWhere('p.lng < :maxLng')
-					->setParameters($box)
-					->getQuery()
-					->getResult();
+					->andWhere('p.lng < :maxLng');
+					
+		if(isset($box['search'])) {
+			$query->andWhere('p.name LIKE :search');
+		}			
+					
+		$query = $query->setParameters($box);
+		
+		$plots = $query->getQuery()->getResult();
 		
 		return $plots;
 	}

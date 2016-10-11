@@ -11,6 +11,7 @@ var map;
 var ajaxRequest;
 var plotlist;
 var plotlayers=[];
+var searchWord = "";
 
 var home = new L.LatLng(47.200549, -1.544480);
 
@@ -39,20 +40,32 @@ function askForPlots() {
 	var minll=bounds.getSouthWest();
 	var maxll=bounds.getNorthEast();
 
+	var box = getBox();
+	
+	if(searchWord != "") {
+		box['search'] = searchWord;
+	}
+	
 	$.ajax({
 	  url: 'plot/search',
 	  type: 'GET',
-	  data: {
-	  	'filter': 'plotsInBox',
-		'minLng': minll.lng,
-		'minLat': minll.lat,
-		'maxLat': maxll.lat,
-		'maxLng': maxll.lng
-	  },
+	  data: box,
 		error: function(data, XMLHttpRequest, textStatus, errorThrown) {
 			throwAjaxError(XMLHttpRequest, textStatus, errorThrown);
 		}
 	}).done(function(plotList) { updateDots(plotList); });
+}
+
+function getBox() {
+	var bounds=map.getBounds();
+	var minll=bounds.getSouthWest();
+	var maxll=bounds.getNorthEast();
+	
+	
+	return { 'minLng': minll.lng,
+			 'minLat': minll.lat,
+			 'maxLat': maxll.lat,
+			 'maxLng': maxll.lng };
 }
 
 function updateDots(plotList) {
@@ -90,14 +103,18 @@ function removeMarkers() {
 function onMapMove(e) { askForPlots(); }
 
 function searchPlotByName() {
+
 	$("#search-form").submit(function(e) {
+		var box = getBox();
+		
+		box["search"] = $("#search-term").val();
+	
+		searchWord = box["search"];
+		
 		$.ajax({
 			url:"plot/search",
 			type:"GET",
-			data:{
-				'filter': 'findByName',
-				"search" : $("#search-term").val()
-			},
+			data:box,
 			error: function(XMLHttpRequest, textStatus, errorThrown) {
 				throwAjaxError(XMLHttpRequest, textStatus, errorThrown);
 			}
