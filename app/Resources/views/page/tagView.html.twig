@@ -26,7 +26,11 @@
 <div class="container">
 	<h1 id="tag-name" data-id="{{ tag.id }}">{{ tag.name }}</h1>
 	<div class="list-group">
-	{% include 'page/tagViewPlots.html.twig' with {'plots':tag.plots, 'offset':0, 'limit':10} %}
+	{% if tag.plots|length > 10 %}
+		{% include 'page/tagViewPlots.html.twig' with {'plots':tag.plots, 'offset':0, 'limit':10} %}
+	{% else %}
+		{% include 'page/tagViewPlots.html.twig' with {'plots':tag.plots, 'offset':0, 'limit':tag.plots|length} %}
+	{% endif %}
 	<div id="loader" class="hidden">Load</div>
   </div>
 </div>	
