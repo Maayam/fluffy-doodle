@@ -20,64 +20,25 @@
 			<li><a href="/map">Map</a></li>
 			<li><a href="#">Register</a></li>
 		</ul>
-		<div class="col-sm-3 col-md-3 pull-right">
-			<form class="navbar-form" id="search-form" role="search">
-				<div class="input-group">
-					<input type="text" class="form-control" placeholder="Search" name="search-term" id="search-term">
-					<div class="input-group-btn">
-						<button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
-					</div>
-				</div>
-			</form>
-		</div>		
 	</div>
 </nav>
 
 <div class="container">
-	<h1>{{ tag.name }}</h1>
+	<h1 id="tag-name" data-id="{{ tag.id }}">{{ tag.name }}</h1>
 	<div class="list-group">
 	{% include 'page/tagViewPlots.html.twig' with {'plots':tag.plots, 'offset':0, 'limit':10} %}
-	<div id="loader" style="display:none">Load</div>
+	<div id="loader" class="hidden">Load</div>
   </div>
 </div>	
 {% endblock %}
 
+{% block head %}
+	{{ parent() }}
+	<link rel="stylesheet" type="text/css" href="{{ asset('tagview.css') }}">
+{% endblock %}
+
 {% block footerScripts %}
-	<script type="text/javascript">
-		var offset = 10;
-		$(document).ready(function () {
-			
-			$(window).data('ready', true);
-			
-			$(window).scroll(function() {
-				
-				if(!$(window).data('ready')) {
-					return;
-				}
-				
-				if($(window).scrollTop() + $(window).height() == $(document).height()) {
-					$(window).data('ready', false);
-					
-					$('.container #loader').fadeIn(400);
-					
-					$.ajax({
-						url: "/view/tag/{{ tag.id }}",
-						type: "GET",
-						data: {'offset': offset}
-					}).done(function(data) {
-						$('.container #loader').before(data['html']);
-						
-						if(!data['end'])
-							$(window).data('ready', true);
-							
-						offset+=10;
-					});
-					
-					$('.container #loader').fadeOut(400);
-				}
-			});
-		});	
-	</script>
+	<script type="text/javascript" src="{{ asset('js/tagview.js') }}"></script>
 {% endblock %}
 
 
