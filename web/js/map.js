@@ -13,7 +13,7 @@ var plotlist;
 var plotlayers=[];
 var searchWord = "";
 
-var home = new L.LatLng(47.200549, -1.544480);
+var home = new L.LatLng(0, 0);
 
 function initmap() { //loads the map
 	// set up the map
@@ -23,9 +23,12 @@ function initmap() { //loads the map
 	var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 	var osmAttrib='Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
 	var osm = new L.TileLayer(osmUrl, {minZoom: 4, maxZoom: 18, attribution: osmAttrib});		
+	
+	map.setView(home ,8);
 
-	// start the map in South-East England
-	map.setView(home ,12);
+	//Try locating the user
+	map.locate({setView:true, maxZoom:18});
+
 	map.addLayer(osm);
 
 	//loads the first plots on mapLoad
@@ -101,7 +104,7 @@ function removeMarkers() {
 	plotlayers=[];
 }
 
-function onMapMove(e) { askForPlots(); }
+function onMapMove(e) { l('here');askForPlots(); }
 
 function searchPlotByName() {
 
