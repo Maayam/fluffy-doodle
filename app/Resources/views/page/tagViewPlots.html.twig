@@ -1,0 +1,11 @@
+{% for i in range(offset, limit-1) %}
+<a href="/view/plot/{{ plots[i].id }}" class="list-group-item">
+	<h4 class="list-group-item-heading">{{ plots[i].name }}</h4>
+	<p class="list-group-item-text">
+		{% if not plots[i].pictures is empty %}
+			<img src="/uploads/pictures/thumbs/{{ plots[i].pictures[0].path }}.png" style="height:50px;"/>
+		{% endif %}
+		{{ plots[i].note }}
+	</p>
+</a>
+{% endfor %}

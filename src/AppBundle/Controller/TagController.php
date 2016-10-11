@@ -30,11 +30,27 @@ class TagController extends Controller
 		
 		$tag = $em->findOneById($id);
 		
-		$plots = $tag->getPlots();
-		
-		return $this->render('page/tagView.html.twig', array("tag"=>$tag));
+		if($request->isXmlHttpRequest()) {
+			$offset = $request->query->get("offset");
+			
+			$limit = $offset + 10;
+			$max = count($tag->getPlots());
+
+			if($offset > $max)
+				return new JsonResponse(array('success'=>true, 'html'=>"", 'end'=>true));
+
+			if($limit > $max)
+				$limit = $max;
+			
+			$html = $this->renderView('/page/tagViewPlots.html.twig', array("plots"=>$tag->getPlots(),
+																			"offset"=>$offset,
+																			"limit"=>$limit));
+			return new JsonResponse(array('success'=>true, 'html'=>$html));
+		} else {
+			return $this->render('page/tagView.html.twig', array("tag"=>$tag));
+		}
 	}
-	
+		
 	/**
 	 * Router for finding tags
 	 *

@@ -36,17 +36,49 @@
 <div class="container">
 	<h1>{{ tag.name }}</h1>
 	<div class="list-group">
-	{% for plot in tag.plots %}
-	<a href="/view/plot/{{ plot.id }}" class="list-group-item">
-		<h4 class="list-group-item-heading">{{ plot.name }}</h4>
-		<p class="list-group-item-text">
-			{% if not plot.pictures is empty %}
-				<img src="/uploads/pictures/thumbs/{{ plot.pictures[0].path }}.png" style="height:50px;"/>
-			{% endif %}
-			{{ plot.note }}
-		</p>
-	</a>
-    {% endfor %}
+	{% include 'page/tagViewPlots.html.twig' with {'plots':tag.plots, 'offset':0, 'limit':10} %}
+	<div id="loader" style="display:none">Load</div>
   </div>
 </div>	
 {% endblock %}
+
+{% block footerScripts %}
+	<script type="text/javascript">
+		var offset = 10;
+		$(document).ready(function () {
+			
+			$(window).data('ready', true);
+			
+			$(window).scroll(function() {
+				
+				if(!$(window).data('ready')) {
+					return;
+				}
+				
+				if($(window).scrollTop() + $(window).height() == $(document).height()) {
+					$(window).data('ready', false);
+					
+					$('.container #loader').fadeIn(400);
+					
+					$.ajax({
+						url: "/view/tag/{{ tag.id }}",
+						type: "GET",
+						data: {'offset': offset}
+					}).done(function(data) {
+						$('.container #loader').before(data['html']);
+						
+						if(!data['end'])
+							$(window).data('ready', true);
+							
+						offset+=10;
+					});
+					
+					$('.container #loader').fadeOut(400);
+				}
+			});
+		});	
+	</script>
+{% endblock %}
+
+
+
