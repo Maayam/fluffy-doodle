@@ -22,9 +22,9 @@ function initmap() { //loads the map
 	// create the tile layer with correct attribution
 	var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 	var osmAttrib='Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
-	var osm = new L.TileLayer(osmUrl, {minZoom: 4, maxZoom: 18, attribution: osmAttrib});		
+	var osm = new L.TileLayer(osmUrl, {minZoom: 3, maxZoom: 18, attribution: osmAttrib});		
 	
-	map.setView(home ,8);
+	map.setView(home, 3);
 
 	//Try locating the user
 	map.locate({setView:true, maxZoom:18});
@@ -104,7 +104,7 @@ function removeMarkers() {
 	plotlayers=[];
 }
 
-function onMapMove(e) { l('here');askForPlots(); }
+function onMapMove(e) { askForPlots(); }
 
 function searchPlotByName() {
 
