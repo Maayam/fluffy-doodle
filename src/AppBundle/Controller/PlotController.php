@@ -196,8 +196,10 @@ class PlotController extends Controller
 				"maxLng" => $request->query->get('maxLng')
 		];
 		
-		if($name != null)
+		if($name != null) {
 			$box['search'] = '%'.$name.'%';
+			$box['filter'] = $request->query->get('filter');
+		}
 		
 		$plots = $this->findInBox($box);
 		
@@ -224,10 +226,19 @@ class PlotController extends Controller
 					->andWhere('p.lng < :maxLng');
 					
 		if(isset($box['search'])) {
-			$query->andWhere('p.name LIKE :search');
-		}			
-					
-		$query = $query->setParameters($box);
+			if($box['filter'] == 1) {
+				$query->andWhere('p.name LIKE :search');
+				unset($box['filter']);
+				$query = $query->setParameters($box);
+			} else {
+				$query->leftJoin('p.tags', 't')
+					  ->andWhere('t.name LIKE :search');
+				unset($box['filter']);
+				$query = $query->setParameters($box);
+			}
+		} else {
+			$query = $query->setParameters($box);
+		}
 		
 		$plots = $query->getQuery()->getResult();
 		

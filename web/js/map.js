@@ -44,6 +44,7 @@ function askForPlots() {
 	
 	if(searchWord != "") {
 		box['search'] = searchWord;
+		box["filter"] = $("#search-type").val();
 	}
 	
 	$.ajax({
@@ -108,7 +109,8 @@ function searchPlotByName() {
 		var box = getBox();
 		
 		box["search"] = $("#search-term").val();
-	
+		box["filter"] = $("#search-type").val();
+		
 		searchWord = box["search"];
 		
 		$.ajax({
