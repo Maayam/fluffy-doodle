@@ -32,13 +32,20 @@ class PlotController extends Controller
 	 * @return The rendered page
 	 *
 	 * @Route("/view/plot/{id}", name="showPlot")
-	 * @Method({"GET"})
+	 * @Method({"GET", "POST"})
 	 */
 	public function viewPlot(Request $request, $id) {
-	
 		$em = $this->getDoctrine()->getManager()->getRepository('AppBundle\Entity\Plot');
-		
+
 		$plot = $em->findOneById($id);
+	
+		if($request->isMethod('POST')) {
+			foreach($request->files as $file) {
+				$plot->setFile($file);
+				$mediaManager = $this->get("media_manager");
+				$plot->addPicture($mediaManager->addMedia($plot));
+			}
+		}
 		
 		return $this->render('page/plotView.html.twig', array("plot"=>$plot));
 	} 
@@ -54,38 +61,38 @@ class PlotController extends Controller
 	 * @Route("/plot", name="postPlot")
 	 * @Method({"POST"})
 	 */
-    public function postPlot(Request $request){
-        // create a plot
-        $plot = new Plot();
-        
-        if(!$request->isXmlHttpRequest())
-        	return;
+	public function postPlot(Request $request){
+		// create a plot
+		$plot = new Plot();
+		
+		if(!$request->isXmlHttpRequest())
+			return;
 
-        //build the form
-        $form = $this->createFormBuilder($plot)
-	        ->add('Lat', HiddenType::class )
-	        ->add('Lng', HiddenType::class )
-	        ->add('Name', TextType::class )
-	        ->add('Note', TextareaType::class )
-	        ->add('File', FileType::class, array('label'=>'Picture', 'required'=>false))
-	        ->add('Tags', TextType::class, array('required'=>false, 'mapped'=>false))
-            ->add('save', SubmitType::class, array('label' => 'Create Plot'))
-            ->getForm();
+		//build the form
+		$form = $this->createFormBuilder($plot)
+			->add('Lat', HiddenType::class )
+			->add('Lng', HiddenType::class )
+			->add('Name', TextType::class )
+			->add('Note', TextareaType::class )
+			->add('File', FileType::class, array('label'=>'Picture', 'required'=>false))
+			->add('Tags', TextType::class, array('required'=>false, 'mapped'=>false))
+			->add('save', SubmitType::class, array('label' => 'Create Plot'))
+			->getForm();
 
-        //handling the submit request
-	    $form->handleRequest($request);
+		//handling the submit request
+		$form->handleRequest($request);
 
-	    if ($form->isSubmitted() && $form->isValid()) {
-	        
-	        $em = $this->getDoctrine()->getManager();
-	        $plot = $form->getData();
-	        
-	        //If a picture was uploaded
-	        if($plot->getFile() != null) {
-	        	$mediaManager = $this->get("media_manager");
-	        	
-	        	$plot->addPicture($mediaManager->addMedia($plot));
-	        }
+		if ($form->isSubmitted() && $form->isValid()) {
+			
+			$em = $this->getDoctrine()->getManager();
+			$plot = $form->getData();
+			
+			//If a picture was uploaded
+			if($plot->getFile() != null) {
+				$mediaManager = $this->get("media_manager");
+				
+				$plot->addPicture($mediaManager->addMedia($plot));
+			}
 
 			$stringTag = $form->get('Tags')->getData();
 
@@ -109,18 +116,18 @@ class PlotController extends Controller
 
 			$plot->setTags($tags);
 
-	       
-	        $em->persist($plot);
-	        $em->flush(); //just like in debug_testCreateAction
-	        
-	        $html = $this->renderView("page/user-map/plotPopup.html.twig", array("plot"=>$plot));
-	        
-	        return new JsonResponse(array('success' => true, 'html'=>$html));
-	    }
-	    else{
-	    	return new JsonResponse(array('success' => false));
-	    }
-    }
+		   
+			$em->persist($plot);
+			$em->flush(); //just like in debug_testCreateAction
+			
+			$html = $this->renderView("page/user-map/plotPopup.html.twig", array("plot"=>$plot));
+			
+			return new JsonResponse(array('success' => true, 'html'=>$html));
+		}
+		else{
+			return new JsonResponse(array('success' => false));
+		}
+	}
 
 	/**
 	 * Create a form to create a plot
@@ -142,12 +149,12 @@ class PlotController extends Controller
 		$lng = $request->query->get('lng');
 
 
-        // create a plot and give it the coords where the user clicked
-        $plot = new Plot();
-        $plot->setLat($lat);
-        $plot->setLng($lng);
-        $plot->setName('');
-        $plot->setNote('');
+		// create a plot and give it the coords where the user clicked
+		$plot = new Plot();
+		$plot->setLat($lat);
+		$plot->setLng($lng);
+		$plot->setName('');
+		$plot->setNote('');
 
 		//fetch tag_list
 		 $em = $this->getDoctrine()->getManager();
@@ -156,23 +163,23 @@ class PlotController extends Controller
 		 	"FROM AppBundle\Entity\Tag tag ");
 		 $tag_list = $query->getResult();
 
-        //build the form
-        $plotForm = $this->createFormBuilder($plot)
-	        ->add('Lat', HiddenType::class )
-	        ->add('Lng', HiddenType::class )
-	        ->add('Name', TextType::class )
-	        ->add('Note', TextareaType::class )
-	        ->add('File', FileType::class, array('label'=>'Picture', 'required'=>false))
-	        ->add('Tags', TextType::class, array(
-	        	'required'=>false, 
-	        	'mapped'=>false, 
-	        	'attr'=>array('placeholder'=>'Enter commas separated tags')
-	        ))
-            ->add('save', SubmitType::class, array('label' => 'Create Plot'))
-            ->getForm();
+		//build the form
+		$plotForm = $this->createFormBuilder($plot)
+			->add('Lat', HiddenType::class )
+			->add('Lng', HiddenType::class )
+			->add('Name', TextType::class )
+			->add('Note', TextareaType::class )
+			->add('File', FileType::class, array('label'=>'Picture', 'required'=>false))
+			->add('Tags', TextType::class, array(
+				'required'=>false, 
+				'mapped'=>false, 
+				'attr'=>array('placeholder'=>'Enter commas separated tags')
+			))
+			->add('save', SubmitType::class, array('label' => 'Create Plot'))
+			->getForm();
 
-        return $this->render('page/plotForm.html.twig', array(
-            'form' => $plotForm->createView(),
+		return $this->render('page/plotForm.html.twig', array(
+			'form' => $plotForm->createView(),
 		));
 	}
 
