@@ -26,7 +26,23 @@
 <div class="container">
 
 	<div id="plot-header" data-lng="{{ plot.lng }}" data-lat="{{ plot.lat }}">
-		<h1>{{ plot.name }}</h1>		
+		<h1 style="display: inline-block; margin-right:10px;">{{ plot.name }}</h1>
+		<button id="show-form" type="button" class="btn btn-primary btn-xs btn-show">
+			<i class="glyphicon glyphicon-plus-sign"></i>
+		</button>
+		<button id="hide-form" type="button" class="btn btn-info btn-xs btn-show" style="display: none;">
+			<i class="glyphicon glyphicon-minus-sign"></i>
+		</button>
+	</div>
+	<div id="form-upload" style="display: none;">
+		<div style="width: 300px; display: inline-block">
+		<form id="add-image" method="post" enctype="multipart/form-data">
+			<input type="file" class="filestyle" data-buttonBefore="true" data-placeholder="Add an image"/>
+		</form>
+		<button type="submit" form="add-image" class="btn btn-primary btn-sm" style="margin-top:5px;">
+			<span class="glyphicon glyphicon-upload"> Upload</span>
+		</button>
+		</div>
 	</div>
 	<div id="plot-note">
 		{{ plot.note }}
@@ -75,6 +91,8 @@
 	<script type="text/javascript" src="{{ asset('js/leaflet.js') }}"></script>
 	{# JS #}
 	<script type="text/javascript" src="{{ asset('js/plotview.js') }}"></script>
+	
+	<script type="text/javascript" src="{{ asset('js/bootstrap-filestyle.min.js') }}"> </script>
 	
 	<script type="text/javascript" src="{{ asset('js/lightslider.min.js') }}"></script>
 {% endblock %}

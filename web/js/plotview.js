@@ -70,10 +70,21 @@ $(document).ready(function () {
 	initmap();
 });
 
-	$(".thumbnail").click(function () {
-		var path = $(this).data('path')
-		console.log(path);
-		$(".img-plot").attr('src', path);
-	});
+$(".thumbnail").click(function () {
+	var path = $(this).data('path')
+	console.log(path);
+	$(".img-plot").attr('src', path);
+});
 
+$("#show-form").click(function() {
+	$(this).hide();
+	$("#form-upload").show(400);
+	$("#hide-form").show();
+});
+
+$("#hide-form").click(function() {
+	$(this).hide();
+	$("#form-upload").hide(400);
+	$("#show-form").show();
+});
 
