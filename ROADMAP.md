@@ -20,6 +20,7 @@
 # Compte utilisateurs
 
 en tant que **visiteur**, je souhaites pouvoir:
+
 	* parcourir la map
 	* voir les différentes informations pour les plots
 	* consulter les profils utilisateurs de façon restreinte
