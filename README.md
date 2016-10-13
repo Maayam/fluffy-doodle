@@ -13,3 +13,7 @@ If you modify the default uploads/pictures/thumbs for the default location, edit
 A Symfony project created on August 25, 2016, 4:16 pm.
 ... well yeah.
 
+## Thanks
+
+* [lightSlider](https://github.com/sachinchoolur/lightslider)
+* [easy-button](https://github.com/CliffCloud/Leaflet.EasyButton)
