@@ -28,12 +28,14 @@ en tant que **visiteur**, je souhaites pouvoir:
 	* me connecter
 
 en tant qu'**utilisateur**, je souhaites pouvoir:
+	
 	* marquer les plots ou j'ai déjà dansé
 	* gérer les plots ou j'ai dansé (lister, supprimer, sur mon profil)
 	* éditer mon profil
 	* rechercher un utilisateur et consulter son profil
 
 Entity: User
+	
 	* **name**
 	* **password**
 	* **mail**
