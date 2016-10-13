@@ -12,6 +12,8 @@ var ajaxRequest;
 var plotlist;
 var plotlayers=[];
 var searchWord = "";
+var addPlot = false;
+var marker = false;
 
 var home = new L.LatLng(0, 0);
 
@@ -26,9 +28,37 @@ function initmap() { //loads the map
 	
 	map.setView(home, 3);
 
-	//Try locating the user
-	map.locate({setView:true, maxZoom:18});
-
+	//Add button to locate the user
+	L.easyButton('glyphicon-screenshot', function(){
+		map.locate({setView:true, maxZoom:18});
+	}, "Locate me").addTo(map);
+	
+	
+	//Add a button to enable/disable add plot
+	var addPlotButton = L.easyButton({
+		states: [{
+			stateName: 'add-plot',
+			icon: 'glyphicon-map-marker', 
+			title: 'Add plot',
+			onClick: function(control) {
+				addPlot = true;
+				control.state('remove-plot');
+			}
+		}, {
+			stateName: 'remove-plot',
+			icon: 'glyphicon-remove-sign',
+			onClick: function(control) {
+				if(marker) {
+					map.removeLayer(marker);
+				}
+				addPlot = false;
+				control.state('add-plot');
+			}
+		}]
+	});
+		
+	addPlotButton.addTo(map);
+	
 	map.addLayer(osm);
 
 	//loads the first plots on mapLoad
@@ -137,8 +167,11 @@ function searchPlotByName() {
 
 function popFormOnClick(){
 	//this could probably be improved... probably...
-	var marker = false;
 	map.on('click', function(e) {
+	
+		if(!addPlot)
+			return;
+			
 		//creates a new marker on click
 		if(marker){
 			//remove the previous marker first (if one)
