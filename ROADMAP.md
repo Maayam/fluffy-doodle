@@ -1,21 +1,3 @@
-=====================================================
-----------------------------------------------------------
-* enrichir les plots
-	* faire le template d'un plot développé
-		* pouvoir ajouter des photos pour ce plot
-			* créer une Entité et une table Media
-			* formulaire d'upload de photo
-			* server-side script pour l'enregistrement des fichiers sur le disque et des emplacements dans la bdd (MediaController)
-		* pouvoir visionner les photos pour ce plots
-			* much JS (probablement une librairie)
-			* server-side script pour servir les photos demandées par la librairie JS (MediaController)
-		* pouvoir ajouter des tags à ce plot
-			* créer une Entité et une table Tag, et une table de relation (manyToMany)
-			* possibilité d'en ajouter à la création du plot (modifier le template de création de plot)
-			* possibilité d'en ajouter sur un plot éxistant
-		* afficher les tags de ce plot
-			(pouvoir lancer une recherche par tag en cliquant sur un tag?)
-
 * Users
 	* Register_page [GET /user/register]
 		* routing + controller method
@@ -35,10 +17,6 @@
 	* manage my plots
 
 
-
-----------------------------------------------------------
-=====================================================
-----------------------------------------------------------
 # Compte utilisateurs
 
 en tant que **visiteur**, je souhaites pouvoir:
@@ -58,4 +36,3 @@ Entity: User
 	* **name**
 	* **password**
 	* **mail**
-
