@@ -37,8 +37,8 @@ security:
 
         main:
             pattern: ^/
-            provider: in_memory
-            # provider: our_db_provider
+            # provider: in_memory
+            provider: our_db_provider
             anonymous: ~
             # http_basic: ~
             form_login:

@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Request;
 use AppBundle\Entity\User;
 use AppBundle\Form\UserType;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
@@ -23,10 +24,9 @@ use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 class UserController extends Controller
 {
 	/**
-	 * Create a new user from a submitted form
+	 * Create a new user from a register form
 	 *
 	 * @param $request The HTML request
-	 * @return JSON containing the operation result
 	 *
 	 * @Route("/signup", name="signup")
 	 */
@@ -43,6 +43,12 @@ class UserController extends Controller
 	        $postUser = $form->getData();
 
 		    $em = $this->getDoctrine()->getManager();
+
+			$plainPassword = $postUser->getPassword();
+			$encoder = $this->container->get('security.password_encoder');
+			$hashed = $encoder->encodePassword($postUser, $plainPassword);
+
+			$postUser->setPassword($hashed);
 
 		    $em->persist($postUser);
 		    $em->flush();
@@ -63,26 +69,39 @@ class UserController extends Controller
 	    }
     }
 
-	// /**
-	//  * Create a form to create an user
-	//  *
-	//  * @param $request The HTML request
-	//  * @return The HTML form to create an user 
-	//  *
-	//  * @Route("/signup", name="signupForm")
-	//  * @Method({"GET"})
-	//  */
-	// public function getUserForm(Request $request){
- //        // create a plot and give it the coords where the user clicked
- //        $user = new User();
- //        $user->setName('');
- //        $user->setPassword('');
- //        $user->setEmail('');
- //        //build the form
- //        $form = $this->createForm(UserType::class, $user);
+	/**
+	 * Shows a user profile
+	 *
+	 * @param $request The HTML request
+	 *
+	 * @Route("/user/{username}", name="showUser")
+	 */
+    public function showUser(Request $request, $username){
+		
+		$user = $this->findUserByName($username);
+		
+		return $this->render('page/userProfile.html.twig', array("user"=>$user));
+    }
 
- //        return $this->render('page/signupForm.html.twig', array(
- //            'form' => $form->createView(),
-	// 	));
-	// }
+	private function findUserByName($name) {
+	//returns all plots which match with a name
+		$em = $this->getDoctrine()->getManager();
+
+		$query = $em->createQuery(
+			'SELECT user
+			FROM AppBundle\Entity\User user
+			WHERE user.username = :name'
+		)->setParameters(array('name' => $name));;
+
+		$content = $query->getResult();
+
+		if(count($content) == 0){
+			$content = null;
+		}
+		else{
+			$content = $content[0];
+		}
+
+		return $content;
+	}
 }
