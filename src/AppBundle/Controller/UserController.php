@@ -74,7 +74,7 @@ class UserController extends Controller
 	 *
 	 * @param $request The HTML request
 	 *
-	 * @Route("/user/{username}", name="showUser")
+	 * @Route("/user/{username}", name="viewUser")
 	 */
     public function showUser(Request $request, $username){
 		
