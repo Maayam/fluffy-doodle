@@ -130,13 +130,6 @@ class PlotController extends Controller
 	}
 
 	/**
-	 * Create a form to create a plot
-	 *
-	 * Meant to respond to an AJAX request
-	 *
-	 * @param $request The HTML request
-	 * @return The HTML form to create a plot
-	 * 
 	 * @Route("/plot/form", name="getPlotForm")
 	 * @Method({"GET"})
 	 */

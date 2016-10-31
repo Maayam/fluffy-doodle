@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class PageController extends Controller
 {
@@ -17,7 +18,7 @@ class PageController extends Controller
     }
 
     /**
-     * @Route("/map", name="mapPage")
+     * @Route("/map", name="map")
      */
     public function mapAction(Request $request)
     {

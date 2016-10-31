@@ -24,7 +24,7 @@ class User
     /**
      * @var string
      *
-     * @ORM\Column(name="name", type="string", length=61, unique=true)
+     * @ORM\Column(name="name", type="string", length=255, unique=true)
      */
     private $name;
 
@@ -38,9 +38,9 @@ class User
     /**
      * @var string
      *
-     * @ORM\Column(name="mail", type="string", length=190, unique=true)
+     * @ORM\Column(name="email", type="string", length=255)
      */
-    private $mail;
+    private $email;
 
 
     /**
@@ -102,27 +102,27 @@ class User
     }
 
     /**
-     * Set mail
+     * Set email
      *
-     * @param string $mail
+     * @param string $email
      *
      * @return User
      */
-    public function setMail($mail)
+    public function setEmail($email)
     {
-        $this->mail = $mail;
+        $this->email = $email;
 
         return $this;
     }
 
     /**
-     * Get mail
+     * Get email
      *
      * @return string
      */
-    public function getMail()
+    public function getEmail()
     {
-        return $this->mail;
+        return $this->email;
     }
 }
 

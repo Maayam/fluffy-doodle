@@ -186,7 +186,7 @@ function popFormOnClick(){
 			'lng': e.latlng.lng
 		};
 		$.ajax({
-			'url': '/plot/form',
+			'url': 'plot/form',
 			'type': 'GET', 
 			'data': coords,
 		}).done(function(data){
@@ -211,7 +211,7 @@ function popFormOnClick(){
 
     			//make the actual post request to the plotController
 				$.ajax({
-					url:"/plot",
+					url:"plot",
 					type:"POST",
 					data:data,
 					contentType: false,

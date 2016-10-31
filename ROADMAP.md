@@ -1,5 +1,5 @@
 * Users
-	* Register_page [GET /user/register]
+	* Register_page [GET /user/signup]
 		* routing + controller method
 		* make template
 		* posting user to the database success

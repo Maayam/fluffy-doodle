@@ -18,7 +18,7 @@
 		</div>
 		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 		    <ul class="nav navbar-nav">
-		        <li><a href="#">Register</a></li>
+		        <li><a href="{{ path('signup') }}">Register</a></li>
 		    </ul>
 		    <div class="col-sm-3 col-md-3 pull-right">
 		        <form class="navbar-form" id="search-form" role="search">
@@ -36,7 +36,13 @@
 		    </div>        
 		</div>
 	</nav>
-
+{% for label, flashes in app.session.flashbag.all %}
+    {% for flash in flashes %}
+        <div class="alert alert-{{ label }}">
+            {{ flash }}
+        </div>
+    {% endfor %}
+{% endfor %}
 	<section id="userMap" class="">
 
 	</section>

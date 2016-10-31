@@ -11,6 +11,7 @@ use AppBundle\Form\UserType;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -27,55 +28,61 @@ class UserController extends Controller
 	 * @param $request The HTML request
 	 * @return JSON containing the operation result
 	 *
-	 * @Route("/user/add", name="addUser")
-	 * @Method({"POST"})
+	 * @Route("/signup", name="signup")
 	 */
     public function postUser(Request $request){
-        // create a user
-        $user = new User();
-
-        //build the form
-        $signupForm = $this->createForm(UserType::class, $user);
+    	$user = new User();
+        $form = $this->createForm(UserType::class, $user);
 
         //handling the submit request
-	    $signupForm->handleRequest($request);
-
-	    if ($signupForm->isSubmitted() && $signupForm->isValid()) {
+	    $form->handleRequest($request);
+	    if ($form->isSubmitted() && $form->isValid()) {
 	        // $form->getData() holds the submitted values
-	        // but, the original `$plot` variable has also been updated
-	        $user = $signupForm->getData();
-	        // ... perform some action, such as saving the plot to the database
-	        // for example, if Plot is a Doctrine entity, save it!
-	        $em = $this->getDoctrine()->getManager();
-	        $em->persist($user);
-	        $em->flush(); //just like in debug_testCreateAction
-	        return new JsonResponse(array('success' => true));
-	    }
+	        // but, the original `$page` variable has also been updated
+
+	        $postUser = $form->getData();
+
+		    $em = $this->getDoctrine()->getManager();
+
+		    $em->persist($postUser);
+		    $em->flush();
+
+		    $this->addFlash(
+            'notice',
+            "l'utilisateur a bien été créé."
+        	);
+
+	        return $this->render('user/signupForm.html.twig', array(
+	            'form' => $form->createView(),
+			));
+	    } //end if fom submited
 	    else{
-	    	return new JsonResponse(array('success' => false));
+	        return $this->render('user/signupForm.html.twig', array(
+	            'form' => $form->createView(),
+			));
 	    }
     }
 
-	/**
-	 * Create a form to create an user
-	 *
-	 * @param $request The HTML request
-	 * @return The HTML form to create an user 
-	 *
-	 * @Route("/signup", name="signupForm")
-	 * @Method({"GET"})
-	 */
-	public function getUserForm(Request $request){
-        // create a plot and give it the coords where the user clicked
-        $user = new User();
-        $user->setName('');
-        $user->setPassword('');
-        $user->setMail('');
-        //build the form
-        $form = $this->createForm(UserType::class, $user);
+	// /**
+	//  * Create a form to create an user
+	//  *
+	//  * @param $request The HTML request
+	//  * @return The HTML form to create an user 
+	//  *
+	//  * @Route("/signup", name="signupForm")
+	//  * @Method({"GET"})
+	//  */
+	// public function getUserForm(Request $request){
+ //        // create a plot and give it the coords where the user clicked
+ //        $user = new User();
+ //        $user->setName('');
+ //        $user->setPassword('');
+ //        $user->setEmail('');
+ //        //build the form
+ //        $form = $this->createForm(UserType::class, $user);
 
-        return $this->render('page/signupForm.html.twig', array(
-            'form' => $form->createView(),
-		));
-	}
+ //        return $this->render('page/signupForm.html.twig', array(
+ //            'form' => $form->createView(),
+	// 	));
+	// }
 }
