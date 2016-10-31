@@ -31,7 +31,7 @@ class PlotController extends Controller
 	 * @param $id The id of the plot to render
 	 * @return The rendered page
 	 *
-	 * @Route("/view/plot/{id}", name="showPlot")
+	 * @Route("/view/plot/{id}", name="viewPlot")
 	 * @Method({"GET", "POST"})
 	 */
 	public function viewPlot(Request $request, $id) {

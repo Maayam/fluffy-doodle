@@ -8,5 +8,5 @@
 </div>
 <p>{{ plot.note }}</p>
 <hr/>
-<a href="/view/plot/{{ plot.id }}">View&nbsp;more</a>
+<a href="{{ path('viewPlot', {'id': plot.id}) }}">View&nbsp;more</a>
 </div>

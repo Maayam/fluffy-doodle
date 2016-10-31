@@ -42,6 +42,13 @@ class User
      */
     private $email;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="avatar", type="string", length=255)
+     */
+    private $avatar;
+
 
     /**
      * Get id
