@@ -74,7 +74,7 @@ class UserController extends Controller
 	 * @param $id The id of the user
 	 * @return The rendered page
 	 *
-	 * @Route("/user/{id}", name="viewUser")
+	 * @Route("/user/{id}", requirements={"id" = "\d+"}, name="viewUser")
 	 * @Method({"GET"})
 	 */
 	public function showUser(Request $request, $id){
