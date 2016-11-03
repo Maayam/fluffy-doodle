@@ -30,19 +30,17 @@ class UserController extends Controller
 	 *
 	 * @Route("/signup", name="signup")
 	 */
-    public function postUser(Request $request){
-    	$user = new User();
-        $form = $this->createForm(UserType::class, $user);
+	public function postUser(Request $request){
+		$user = new User();
+		$form = $this->createForm(UserType::class, $user);
 
-        //handling the submit request
-	    $form->handleRequest($request);
-	    if ($form->isSubmitted() && $form->isValid()) {
-	        // $form->getData() holds the submitted values
-	        // but, the original `$page` variable has also been updated
+		//handling the submit request
+		$form->handleRequest($request);
+		if ($form->isSubmitted() && $form->isValid()) {
 
-	        $postUser = $form->getData();
+			$postUser = $form->getData();
 
-		    $em = $this->getDoctrine()->getManager();
+			$em = $this->getDoctrine()->getManager();
 
 			$plainPassword = $postUser->getPassword();
 			$encoder = $this->container->get('security.password_encoder');
@@ -50,58 +48,57 @@ class UserController extends Controller
 
 			$postUser->setPassword($hashed);
 
-		    $em->persist($postUser);
-		    $em->flush();
+			$em->persist($postUser);
+			$em->flush();
 
-		    $this->addFlash(
-            'notice',
-            "l'utilisateur a bien été créé."
-        	);
+			$this->addFlash(
+				'notice',
+				"l'utilisateur a bien été créé."
+			);
 
-	        return $this->render('user/signupForm.html.twig', array(
-	            'form' => $form->createView(),
+			return $this->render('user/signupForm.html.twig', array(
+				'form' => $form->createView(),
 			));
-	    } //end if fom submited
-	    else{
-	        return $this->render('user/signupForm.html.twig', array(
-	            'form' => $form->createView(),
+		} //end if fom submited
+		else{
+			return $this->render('user/signupForm.html.twig', array(
+				'form' => $form->createView(),
 			));
-	    }
-    }
+		}
+	}
 
 	/**
 	 * Shows a user profile
 	 *
 	 * @param $request The HTML request
+	 * @param $id The id of the user
+	 * @return The rendered page
 	 *
-	 * @Route("/user/{username}", name="viewUser")
+	 * @Route("/user/{id}", name="viewUser")
+	 * @Method({"GET"})
 	 */
-    public function showUser(Request $request, $username){
+	public function showUser(Request $request, $id){
 		
-		$user = $this->findUserByName($username);
+		$user = $this->getUserById($id);
 		
-		return $this->render('page/userProfile.html.twig', array("user"=>$user));
-    }
-
-	private function findUserByName($name) {
-	//returns all plots which match with a name
-		$em = $this->getDoctrine()->getManager();
-
-		$query = $em->createQuery(
-			'SELECT user
-			FROM AppBundle\Entity\User user
-			WHERE user.username = :name'
-		)->setParameters(array('name' => $name));;
-
-		$content = $query->getResult();
-
-		if(count($content) == 0){
-			$content = null;
+		if($user) {
+			return $this->render('page/userProfile.html.twig', array("user"=>$user));
+		} else {
+			throw $this->createNotFoundException('User not found');
 		}
-		else{
-			$content = $content[0];
-		}
+	}
 
-		return $content;
+	/**
+	 * Get a user by its id
+	 *
+	 * @param $id The id to match with
+	 * @return The matching user
+	 */
+	private function getUserById($id) {
+		$em = $this->getDoctrine()->getManager()->getRepository('AppBundle\Entity\User');
+
+		$user = $em->findOneById($id);	
+		
+		return $user;
 	}
 }
