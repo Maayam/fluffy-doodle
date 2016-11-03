@@ -87,6 +87,25 @@ class UserController extends Controller
 			throw $this->createNotFoundException('User not found');
 		}
 	}
+	
+	/**
+	 * Check wether an user is logged
+	 *
+	 * @Route("/user/logged", name="logged")
+	 * @Method({"GET"})
+	 */
+	public function isLogged(Request $request) {
+	
+		if($request->isXmlHttpRequest()) {
+			$securityContext = $this->container->get('security.authorization_checker');
+			$logged = $securityContext->isGranted('IS_AUTHENTICATED_REMEMBERED');
+		
+			return new JsonResponse(array("logged"=>$logged));
+			
+		} else {
+			throw $this->createNotFoundException('Page not found');
+		}
+	}
 
 	/**
 	 * Get a user by its id
