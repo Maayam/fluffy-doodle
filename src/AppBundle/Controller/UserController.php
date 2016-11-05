@@ -91,20 +91,20 @@ class UserController extends Controller
 	/**
 	 * Check wether an user is logged
 	 *
-	 * @Route("/user/logged", name="logged")
+	 * @Route("/user/isLoggedin", name="isLoggedin")
 	 * @Method({"GET"})
 	 */
 	public function isLogged(Request $request) {
 	
-		if($request->isXmlHttpRequest()) {
+		// if($request->isXmlHttpRequest()) {
 			$securityContext = $this->container->get('security.authorization_checker');
-			$logged = $securityContext->isGranted('IS_AUTHENTICATED_REMEMBERED');
+			$isLogged = $securityContext->isGranted('IS_AUTHENTICATED_REMEMBERED');
 		
-			return new JsonResponse(array("logged"=>$logged));
+			return new JsonResponse(array("isLoggedIn"=>$isLogged));
 			
-		} else {
-			throw $this->createNotFoundException('Page not found');
-		}
+		// } else {
+			// throw $this->createNotFoundException('Page not found');
+		// }
 	}
 
 	/**

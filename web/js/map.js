@@ -1,3 +1,4 @@
+$(document).ready(function(){
 
 
 var l = (data) => { //cuz i'm lazy
@@ -53,18 +54,20 @@ function initmap() { //loads the map
 					}
 				}
 	];
-
 	
 	// Add button to add plots only if user is logged	
 	$.ajax({
-			url:"/user/logged",
+			url: base['isLoggedinPath'],
 			type:"GET",
 		}).done(function(data) {
-			if(data.logged) {
+			if(data['isLoggedIn']) {
 				addPlotButton = L.easyButton({
 					states: states
 				});
 				addPlotButton.addTo(map);
+			}
+			else{
+				alert("You need to be logged in to add plots");
 			}
 		});
 	
@@ -146,6 +149,10 @@ function removeMarkers() {
 
 function onMapMove(e) { askForPlots(); }
 
+function initNav(){
+	searchPlotByName();
+}
+
 function searchPlotByName() {
 
 	$("#search-form").submit(function(e) {
@@ -153,6 +160,8 @@ function searchPlotByName() {
 		
 		box["search"] = $("#search-term").val();
 		box["filter"] = $("#search-type").val();
+
+		l(box["filter"]);
 		
 		searchWord = box["search"];
 		
@@ -251,4 +260,6 @@ function popFormOnClick(){
 } //end popFormOnClick()
 initmap();
 popFormOnClick();
-searchPlotByName();
+initNav();
+
+});

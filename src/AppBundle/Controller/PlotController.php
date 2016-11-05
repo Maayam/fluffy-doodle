@@ -226,11 +226,12 @@ class PlotController extends Controller
 					->andWhere('p.lng < :maxLng');
 					
 		if(isset($box['search'])) {
-			if($box['filter'] == 1) {
+			if($box['filter'] == 'name' || $box['filter'] == 'none') {
 				$query->andWhere('p.name LIKE :search');
 				unset($box['filter']);
 				$query = $query->setParameters($box);
-			} else {
+			} 
+			else if($box['filter'] == 'tag'){
 				$query->leftJoin('p.tags', 't')
 					  ->andWhere('t.name LIKE :search');
 				unset($box['filter']);
