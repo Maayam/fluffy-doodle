@@ -33,31 +33,41 @@ function initmap() { //loads the map
 		map.locate({setView:true, maxZoom:18});
 	}, "Locate me").addTo(map);
 	
-	
-	//Add a button to enable/disable add plot
-	var addPlotButton = L.easyButton({
-		states: [{
-			stateName: 'add-plot',
-			icon: 'glyphicon-map-marker', 
-			title: 'Add plot',
-			onClick: function(control) {
-				addPlot = true;
-				control.state('remove-plot');
-			}
-		}, {
-			stateName: 'remove-plot',
-			icon: 'glyphicon-remove-sign',
-			onClick: function(control) {
-				if(marker) {
-					map.removeLayer(marker);
+	var states = [{
+					stateName: 'add-plot',
+					icon: 'glyphicon-map-marker', 
+					title: 'Add plot',
+					onClick: function(control) {
+						addPlot = true;
+						control.state('remove-plot');
+					}
+				}, {
+					stateName: 'remove-plot',
+					icon: 'glyphicon-remove-sign',
+					onClick: function(control) {
+						if(marker) {
+							map.removeLayer(marker);
+						}
+						addPlot = false;
+						control.state('add-plot');
+					}
 				}
-				addPlot = false;
-				control.state('add-plot');
+	];
+
+	
+	// Add button to add plots only if user is logged	
+	$.ajax({
+			url:"/user/logged",
+			type:"GET",
+		}).done(function(data) {
+			if(data.logged) {
+				addPlotButton = L.easyButton({
+					states: states
+				});
+				addPlotButton.addTo(map);
 			}
-		}]
-	});
-		
-	addPlotButton.addTo(map);
+		});
+	
 	
 	map.addLayer(osm);
 
