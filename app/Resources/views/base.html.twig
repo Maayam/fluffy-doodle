@@ -6,9 +6,11 @@
         <title>{% block pageTitle %}{% endblock %}</title>
 
         {# JQUERY #}
+        <script type="text/javascript" src="{{ asset('js/lib.js') }}"></script>
         <script type="text/javascript">
-            var base = [];
-            base['isLoggedinPath'] = "{{ path('isLoggedin') }}";
+            var path = [];
+            path['isLoggedinPath'] = "{{ path('isLoggedin') }}";
+            // path['markAsDanced'] = "{# path('markAsDanced') #}";
         </script>
         <script
               src="http://code.jquery.com/jquery-3.1.0.min.js"

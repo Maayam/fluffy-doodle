@@ -120,4 +120,50 @@ class UserController extends Controller
 		
 		return $user;
 	}
+
+	/**
+	 * Router for finding functions
+	 *
+	 * @param $request The HTML request
+	 * @return User List matching the research
+	 *
+	 * @Route("/user/search", name="findUsers")
+	 * @Method({"GET"})
+	 */
+	public function findUsers(Request $request){
+		
+		$users = null;
+		$name = $request->query->get('search');
+		
+		if($name != null) {
+			$box['search'] = '%'.$name.'%';
+			$box['filter'] = $request->query->get('filter');
+		}
+		
+		$users = $this->findLikeName($box['search']);
+		
+		return new JsonResponse($this->createPlotHtml($plots));
+	}
+
+	// /**
+	//  * Find all users matching the keyword
+	//  *
+	//  * @param $search the keyword
+	//  * @return All users matching the search term.
+	//  */
+	// private function findLikeName($search){
+		
+	// 	$em = $this->getDoctrine()
+	// 	->getManager()
+	// 	->getRepository('AppBundle\Entity\Plot')
+	// 	->createQueryBuilder('u');
+		
+		// $query = $em->select('u')
+		// ->andWhere('u.name LIKE :search')
+		// ->setParameters($search);
+		
+	// 	$plots = $query->getQuery()->getResult();
+		
+	// 	return $plots;
+	// }
 }

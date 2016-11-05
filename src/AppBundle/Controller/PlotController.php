@@ -217,7 +217,10 @@ class PlotController extends Controller
 	 */
 	private function findInBox($box){
 		
-		$em = $this->getDoctrine()->getManager()->getRepository('AppBundle\Entity\Plot')->createQueryBuilder('p');
+		$em = $this->getDoctrine()
+		->getManager()
+		->getRepository('AppBundle\Entity\Plot')
+		->createQueryBuilder('p');
 		
 		$query = $em->select('p')
 					->where('p.lat > :minLat')

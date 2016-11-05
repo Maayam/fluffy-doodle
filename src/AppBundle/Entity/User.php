@@ -43,6 +43,17 @@ class User implements UserInterface
      */
     private $email;
 
+    /**
+     * @var array $performances Performances associated with the user
+     *
+     * @ORM\OneToMany(targetEntity="Performance", mappedBy="user")
+     */
+    private $performances;
+
+    public function __construct() {
+        $this->performances = new ArrayCollection();
+    }
+
 
     /**
      * Get id
@@ -183,5 +194,39 @@ class User implements UserInterface
     public function getAvatar()
     {
         return $this->avatar;
+    }
+
+    /**
+     * Add performance
+     *
+     * @param \AppBundle\Entity\Performance $performance
+     *
+     * @return User
+     */
+    public function addPerformance(\AppBundle\Entity\Performance $performance)
+    {
+        $this->performances[] = $performance;
+
+        return $this;
+    }
+
+    /**
+     * Remove performance
+     *
+     * @param \AppBundle\Entity\Performance $performance
+     */
+    public function removePerformance(\AppBundle\Entity\Performance $performance)
+    {
+        $this->performances->removeElement($performance);
+    }
+
+    /**
+     * Get performances
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPerformances()
+    {
+        return $this->performances;
     }
 }

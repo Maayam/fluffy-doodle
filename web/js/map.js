@@ -1,13 +1,5 @@
 $(document).ready(function(){
 
-
-var l = (data) => { //cuz i'm lazy
-	console.log(data);
-}
-var throwAjaxError = (MLHttpRequest, textStatus, errorThrown) => {
-	alert("AJAX request Failed...\n Text Status: "+textStatus+"\n Error Thrown: "+errorThrown);
-}
-
 var map;
 var ajaxRequest;
 var plotlist;
@@ -57,7 +49,7 @@ function initmap() { //loads the map
 	
 	// Add button to add plots only if user is logged	
 	$.ajax({
-			url: base['isLoggedinPath'],
+			url: path['isLoggedinPath'],
 			type:"GET",
 		}).done(function(data) {
 			if(data['isLoggedIn']) {
@@ -160,10 +152,6 @@ function searchPlotByName() {
 		
 		box["search"] = $("#search-term").val();
 		box["filter"] = $("#search-type").val();
-
-		l(box["filter"]);
-		
-		searchWord = box["search"];
 		
 		$.ajax({
 			url:"plot/search",

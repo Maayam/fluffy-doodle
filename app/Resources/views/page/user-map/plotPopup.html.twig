@@ -6,6 +6,11 @@
 	<a href="{{ pictures_dir }}/{{ plot.pictures[0].path }}"><img style="display:block; margin-left:auto; margin-right:auto;" src="{{ thumbs_dir }}/{{ plot.pictures[0].path }}.png"></a>
 {% endif %}
 </div>
+{% if app.user.username is defined %}
+<button onclick="setDanced( {{plot.id}}, '{{ app.user.username }}' )" class="btn btn-purple danced-button">Danced here!</button>
+{% else %}
+<button onclick="notConnected()" class="btn btn-purple danced-button">Danced here!</button>
+{% endif %}
 <p>{{ plot.note }}</p>
 <hr/>
 <a href="{{ path('viewPlot', {'id': plot.id}) }}">View&nbsp;more</a>

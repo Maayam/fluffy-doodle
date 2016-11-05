@@ -45,3 +45,8 @@
 .wrapper{
 	padding:8px;
 }
+
+.btn-purple{
+	background-color: rgb(141,87,228);
+	color: #EEE;
+}
