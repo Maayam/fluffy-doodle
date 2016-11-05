@@ -46,7 +46,7 @@ class User implements UserInterface
     /**
      * @var array $performances Performances associated with the user
      *
-     * @ORM\OneToMany(targetEntity="Performance", mappedBy="user")
+     * @ORM\OneToMany(targetEntity="Performance", mappedBy="performer")
      */
     private $performances;
 

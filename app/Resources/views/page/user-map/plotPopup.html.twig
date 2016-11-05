@@ -7,7 +7,7 @@
 {% endif %}
 </div>
 {% if app.user.username is defined %}
-<button onclick="setDanced( {{plot.id}}, '{{ app.user.username }}' )" class="btn btn-purple danced-button">Danced here!</button>
+<button id="plot-{{plot.id}}" onclick="setDanced( {{plot.id}}, '{{ app.user.username }}' )" class="btn btn-purple danced-button">Add Performance Here!</button>
 {% else %}
 <button onclick="notConnected()" class="btn btn-purple danced-button">Danced here!</button>
 {% endif %}

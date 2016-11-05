@@ -75,9 +75,17 @@ class Plot
 	 */
 	private $pictures;
 
+	/**
+	 * @var array $performances Performances associated with the plot
+	 *
+	 * @ORM\OneToMany(targetEntity="Performance", mappedBy="plot")
+	 */
+	private $performances;
+
 	public function __construct() {
 		$this->tags = new ArrayCollection();
 		$this->pictures = new ArrayCollection();
+		$this->performances = new ArrayCollection();
 	}
 
 	///////////////////////
@@ -168,4 +176,58 @@ class Plot
 			throw new Exception("$tags must be an instance of Tag or ArrayCollection ");
 		}
 	}
+
+    /**
+     * Remove tag
+     *
+     * @param \AppBundle\Entity\Tag $tag
+     */
+    public function removeTag(\AppBundle\Entity\Tag $tag)
+    {
+        $this->tags->removeElement($tag);
+    }
+
+    /**
+     * Remove picture
+     *
+     * @param \AppBundle\Entity\Media $picture
+     */
+    public function removePicture(\AppBundle\Entity\Media $picture)
+    {
+        $this->pictures->removeElement($picture);
+    }
+
+    /**
+     * Add performance
+     *
+     * @param \AppBundle\Entity\Performance $performance
+     *
+     * @return Plot
+     */
+    public function addPerformance(\AppBundle\Entity\Performance $performance)
+    {
+        $this->performances[] = $performance;
+
+        return $this;
+    }
+
+    /**
+     * Remove performance
+     *
+     * @param \AppBundle\Entity\Performance $performance
+     */
+    public function removePerformance(\AppBundle\Entity\Performance $performance)
+    {
+        $this->performances->removeElement($performance);
+    }
+
+    /**
+     * Get performances
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPerformances()
+    {
+        return $this->performances;
+    }
 }

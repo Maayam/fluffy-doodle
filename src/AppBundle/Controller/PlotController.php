@@ -8,6 +8,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use AppBundle\Entity\Plot;
 use AppBundle\Entity\Tag;
+use AppBundle\Entity\Performance;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
@@ -174,6 +175,47 @@ class PlotController extends Controller
 		return $this->render('page/plotForm.html.twig', array(
 			'form' => $plotForm->createView(),
 		));
+	}
+
+
+	/**
+	 * Mark a plot as danced
+	 *
+	 * @param $request The HTML request
+	 * @return JSON
+	 *
+	 * @Route("/plot/markAsDanced", name="markAsDanced")
+	 * @Method({"POST", "GET"})
+	 */
+	public function markAsDancedAction(Request $request){
+
+		$params = $request->request->all();
+
+		$manager = $this->getDoctrine()->getManager();
+
+		//get Plot (may not be necessary)
+		$plotRepo = $manager->getRepository('AppBundle\Entity\Plot');
+		$plot = $plotRepo->findOneById($params['plotId']);
+
+		//get User
+		$userRepo = $manager->getRepository('AppBundle\Entity\user')->createQueryBuilder('u');
+		$user = $userRepo->select('u')
+					->where('u.username = :name')
+					->setParameter('name', $params['username'])
+					->getQuery()
+					->getResult()[0];
+
+		$user_id = $user->getId();
+		$plot_id = $plot->getId();
+
+		$performance = new Performance();
+		$performance->setPerformer($user);
+		$performance->setPlot($plot);
+
+		$manager->persist($performance);
+		$manager->flush();
+
+		return new JsonResponse(array('success' => true));
 	}
 
 	/**
