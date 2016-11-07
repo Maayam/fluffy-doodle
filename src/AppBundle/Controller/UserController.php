@@ -129,7 +129,8 @@ class UserController extends Controller
 	 * @param $request The HTML request
 	 * @return User List matching the research
 	 *
-	 * @Route("/user/search", name="findUsers")
+	 * @Route("/user/search", name="findUsers", defaults={"_locale"="en"})
+	 * @Route("/{_locale}/user/search", name="findUsersLoc", requirements={"_locale"="en|fr"})
 	 * @Method({"GET"})
 	 */
 	public function findUsers(Request $request){

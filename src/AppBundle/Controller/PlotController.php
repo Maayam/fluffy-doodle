@@ -134,7 +134,7 @@ class PlotController extends Controller
 
 	/**
 	 * @Route("/plot/form", name="getPlotForm", defaults={"_locale"="en"})
-	 * @Route("{_locale}/plot/form", name="getPlotForm", requirements={"_locale"="en|fr"})
+	 * @Route("{_locale}/plot/form", name="getPlotFormLoc", requirements={"_locale"="en|fr"})
 	 * @Method({"GET"})
 	 */
 	public function getPlotForm(Request $request){
@@ -228,7 +228,7 @@ class PlotController extends Controller
 	 * @return JSON representation of the plots matching the research
 	 *
      * @Route("/plot/search", name="findPlot", defaults={"_locale"="en"})
-     * @Route("/{_locale}/plot/search", name="findPlot", requirements={"_locale"="en|fr"})
+     * @Route("/{_locale}/plot/search", name="findPlotLoc", requirements={"_locale"="en|fr"})
 	 * @Method({"GET"})
 	 */
 	public function findPlots(Request $request){
