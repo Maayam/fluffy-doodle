@@ -6,19 +6,19 @@
         <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
     {% endif %}
 
-    <form action="{{ path('login') }}" method="post">
-        <label for="username">Username:</label>
+    <form action="{{ path('loginLoc') }}" method="post">
+        <label for="username">{{ 'Username:'|trans }}</label>
         <input type="text" id="username" name="_username" value="{{ last_username }}" />
 
-        <label for="password">Password:</label>
+        <label for="password">{{ 'Password:'|trans }}</label>
         <input type="password" id="password" name="_password" />
 
         {#
             If you want to control the URL the user
             is redirected to on success (more details below)
         #}
-            <input type="hidden" name="{{ path('map') }}" value="/account" />
+            <input type="hidden" name="{{ path('mapLoc') }}" value="/account" />
 
-        <button type="submit">login</button>
+        <button type="submit">{{ 'Login'|trans }}</button>
     </form>
 {% endblock %}
