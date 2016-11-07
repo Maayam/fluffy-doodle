@@ -28,7 +28,8 @@ class UserController extends Controller
 	 *
 	 * @param $request The HTML request
 	 *
-	 * @Route("/signup", name="signup")
+	 * @Route("/signup", name="signup", defaults={"_locale"="en"})
+	 * @Route("/signup", name="signupLoc", requirements={"_locale"="en|fr"})
 	 */
 	public function postUser(Request $request){
 		$user = new User();
@@ -74,7 +75,8 @@ class UserController extends Controller
 	 * @param $id The id of the user
 	 * @return The rendered page
 	 *
-	 * @Route("/user/{id}", requirements={"id" = "\d+"}, name="viewUser")
+	 * @Route("/user/{id}", requirements={"id" = "\d+"}, name="viewUser", defaults={"_locale"="en"})
+	 * @Route("/{_locale}/user/{id}", requirements={"id" = "\d+", "_locale"="en|fr"}, name="viewUserLoc")
 	 * @Method({"GET"})
 	 */
 	public function showUser(Request $request, $id){

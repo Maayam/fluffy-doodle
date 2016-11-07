@@ -32,7 +32,8 @@ class PlotController extends Controller
 	 * @param $id The id of the plot to render
 	 * @return The rendered page
 	 *
-	 * @Route("/view/plot/{id}", name="viewPlot")
+	 * @Route("/view/plot/{id}", name="viewPlot", defaults={"_locale"="en"})
+	 * @Route("/{_locale}/view/plot/{id}", name="viewPlotLoc", requirements={"_locale"="en|fr"})
 	 * @Method({"GET", "POST"})
 	 */
 	public function viewPlot(Request $request, $id) {
@@ -59,7 +60,8 @@ class PlotController extends Controller
 	 * @param $request The HTML request
 	 * @return JSON containing the created plot informations
 	 *
-	 * @Route("/plot", name="postPlot")
+	 * @Route("/plot", name="postPlot", defaults={"_locale"="en"})
+	 * @Route("/{_locale}/plot", name="postPlotLoc", requirements={"_locale"="en|fr"})
 	 * @Method({"POST"})
 	 */
 	public function postPlot(Request $request){
@@ -131,7 +133,8 @@ class PlotController extends Controller
 	}
 
 	/**
-	 * @Route("/plot/form", name="getPlotForm")
+	 * @Route("/plot/form", name="getPlotForm", defaults={"_locale"="en"})
+	 * @Route("{_locale}/plot/form", name="getPlotForm", requirements={"_locale"="en|fr"})
 	 * @Method({"GET"})
 	 */
 	public function getPlotForm(Request $request){
@@ -224,7 +227,8 @@ class PlotController extends Controller
 	 * @param $request The HTML request
 	 * @return JSON representation of the plots matching the research
 	 *
-	 * @Route("/plot/search", name="findPlot")
+     * @Route("/plot/search", name="findPlot", defaults={"_locale"="en"})
+     * @Route("/{_locale}/plot/search", name="findPlot", requirements={"_locale"="en|fr"})
 	 * @Method({"GET"})
 	 */
 	public function findPlots(Request $request){

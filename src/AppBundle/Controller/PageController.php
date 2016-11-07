@@ -10,15 +10,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 class PageController extends Controller
 {
     /**
-     * @Route("/home", name="landingPage")
-     */
-    public function landAction(Request $request)
-    {
-        return $this->render('page/landingPage.html.twig');
-    }
-
-    /**
-     * @Route("/map", name="map")
+     * @Route("/map", name="map", defaults={"_locale"="en"})
+     * @Route("/{_locale}/map", name="mapLoc", requirements={"_locale"="en|fr"})
      */
     public function mapAction(Request $request)
     {

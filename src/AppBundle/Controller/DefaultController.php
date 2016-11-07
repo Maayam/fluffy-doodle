@@ -10,20 +10,11 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 class DefaultController extends Controller
 {
     /**
-     * @Route("/", name="defaultPage")
+     * @Route("/", name="defaultPage", defaults={"_locale"="en"})
+     * @Route("/{_locale}/", name="defaultPageLoc", requirements={"_locale"="en|fr"})
      */
     public function indexAction(Request $request)
     {
         return $this->render('default/default.html.twig');
-    }
-
-    /**
-     *@Route("/testAjax", name="testAjax")
-     */
-    public function testAjaxAction(){
-    	return new JsonResponse(array(
-    		'data' => "this is JSON Data.",
-    		'Warning' => "DONT MESS WITH THIS SHIT OK !?"
-    	));
     }
 }

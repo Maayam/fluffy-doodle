@@ -22,7 +22,8 @@ class TagController extends Controller
 	 * @param $id The id of the tag to render
 	 * @return The rendered page
 	 *
-	 * @Route("/view/tag/{id}", name="viewTag")
+	 * @Route("/view/tag/{id}", name="viewTag", defaults={"_locale"="en"})
+	 * @Route("/{_locale}/view/tag/{id}", name="viewTagLoc", requirements={"_locale"="en|fr"})
 	 * @Method({"GET"})
 	 */
 	public function viewTag(Request $request, $id) {
@@ -57,7 +58,8 @@ class TagController extends Controller
 	 * @param $request The HTML request
 	 * @return JSON representation of the tags matching the research
 	 *
-	 * @Route("/tag/search", name="findTag")
+	 * @Route("/tag/search", name="findTag", defaults={"_locale"="en"})
+	 * @Route("/{_locale}/tag/search", name="findTagLoc", requirements={"_locale"="en|fr"})
 	 * @Method({"GET"})
 	 */
 	public function findTags(Request $request){
