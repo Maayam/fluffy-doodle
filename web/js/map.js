@@ -17,18 +17,18 @@ function initmap() { //loads the map
 	// create the tile layer with correct attribution
 	var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 	var osmAttrib='Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
-	var osm = new L.TileLayer(osmUrl, {minZoom: 3, maxZoom: 18, attribution: osmAttrib});		
-	
+	var osm = new L.TileLayer(osmUrl, {minZoom: 3, maxZoom: 18, attribution: osmAttrib});
+
 	map.setView(home, 3);
 
 	//Add button to locate the user
 	L.easyButton('glyphicon-screenshot', function(){
 		map.locate({setView:true, maxZoom:18});
 	}, "Locate me").addTo(map);
-	
+
 	var states = [{
 					stateName: 'add-plot',
-					icon: 'glyphicon-map-marker', 
+					icon: 'glyphicon-map-marker',
 					title: 'Add plot',
 					onClick: function(control) {
 						addPlot = true;
@@ -46,8 +46,8 @@ function initmap() { //loads the map
 					}
 				}
 	];
-	
-	// Add button to add plots only if user is logged	
+
+	// Add button to add plots only if user is logged
 	$.ajax({
 			url: path['isLoggedinPath'],
 			type:"GET",
@@ -58,12 +58,9 @@ function initmap() { //loads the map
 				});
 				addPlotButton.addTo(map);
 			}
-			else{
-				alert("You need to be logged in to add plots");
-			}
 		});
-	
-	
+
+
 	map.addLayer(osm);
 
 	//loads the first plots on mapLoad
@@ -79,12 +76,12 @@ function askForPlots() {
 	var maxll=bounds.getNorthEast();
 
 	var box = getBox();
-	
+
 	if(searchWord != "") {
 		box['search'] = searchWord;
 		box["filter"] = $("#search-type").val();
 	}
-	
+
 	$.ajax({
 	  url: 'plot/search',
 	  type: 'GET',
@@ -99,8 +96,8 @@ function getBox() {
 	var bounds=map.getBounds();
 	var minll=bounds.getSouthWest();
 	var maxll=bounds.getNorthEast();
-	
-	
+
+
 	return { 'minLng': minll.lng,
 			 'minLat': minll.lat,
 			 'maxLat': maxll.lat,
@@ -109,7 +106,7 @@ function getBox() {
 
 function updateDots(plotList) {
 	removeMarkers();
-	
+
 	for( i=0; i < plotList.length; i++ ) {
 		//coords are supposed to be decimals!
 		var plot = plotList[i];
@@ -149,10 +146,10 @@ function searchPlotByName() {
 
 	$("#search-form").submit(function(e) {
 		var box = getBox();
-		
+
 		box["search"] = $("#search-term").val();
 		box["filter"] = $("#search-type").val();
-		
+
 		$.ajax({
 			url:"plot/search",
 			type:"GET",
@@ -175,10 +172,10 @@ function searchPlotByName() {
 function popFormOnClick(){
 	//this could probably be improved... probably...
 	map.on('click', function(e) {
-	
+
 		if(!addPlot)
 			return;
-			
+
 		//creates a new marker on click
 		if(marker){
 			//remove the previous marker first (if one)
@@ -194,7 +191,7 @@ function popFormOnClick(){
 		};
 		$.ajax({
 			'url': 'plot/form',
-			'type': 'GET', 
+			'type': 'GET',
 			'data': coords,
 		}).done(function(data){
 			//when got the form, append it in the marker popup
@@ -210,7 +207,7 @@ function popFormOnClick(){
 			//when the form is submitted
 			$("form[name='form']").submit(function(e) {
     			e.preventDefault(); //prevent the redirection
-				
+
 				var data = new FormData($(this)[0]);
 
 				//close the form Popup and show a loading text instead
