@@ -32,3 +32,4 @@ If the locale isn't supported yet, we need to add it to the different controller
 
 * [lightSlider](https://github.com/sachinchoolur/lightslider)
 * [easy-button](https://github.com/CliffCloud/Leaflet.EasyButton)
+* [flag-icon-css](https://github.com/lipis/flag-icon-css)
