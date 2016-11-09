@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block body %}
-<div id="wrapper" class="container-fluid">
+<div class="container-fluid">
 {% for label, flashes in app.session.flashbag.all %}
     {% for flash in flashes %}
         <div class="alert alert-{{ label }}">
