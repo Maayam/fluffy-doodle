@@ -6,29 +6,10 @@
 
 security:
     encoders:
-        # for usin users from db
-        AppBundle\Entity\User:
-            algorithm: bcrypt
-        # for in memory users
-        Symfony\Component\Security\Core\User\User:
-            algorithm: bcrypt
-            cost: 12
+       FOS\UserBundle\Model\UserInterface: bcrypt
     providers:
-        our_db_provider:
-            entity:
-                class: AppBundle:User
-                property: username
-                # if you're using multiple entity managers
-                # manager_name: customer
-        in_memory:
-            memory:
-                users:
-                    ryan:
-                        password: $2y$12$8UjNKOHDsmmFsYfS2D25c.TfS.fAw4VtWcgMOGo3v9Vq7zCHhRVSK
-                        roles: 'ROLE_USER'
-                    admin:
-                        password: $2y$12$egDqQrhS9raVqb8R5Iizo.m5MMlNXqyLEk/CGFOrgYTcam82TldlG
-                        roles: 'ROLE_ADMIN'
+        fos_userbundle:
+            id: fos_user.user_provider.username
 
     firewalls:
         dev:
@@ -37,18 +18,21 @@ security:
 
         main:
             pattern: ^/
-            # provider: in_memory
-            provider: our_db_provider
-            anonymous: ~
-            # http_basic: ~
             form_login:
-                login_path: login
-                check_path: login
+                provider: fos_userbundle
+                csrf_token_generator: security.csrf.token_manager
+                check_path: fos_user_security_check
+                login_path: fos_user_security_login
             logout:
-                path:   /logout
-                target: /map
+                path: fos_user_security_logout
+                target: /
+            anonymous: true
 
 
     access_control:
-        # require ROLE_ADMIN for /admin*
-        - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/[^/]+/admin, role: ROLE_ADMIN }
+        - { path: ^/[^/]+/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/[^/]+/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/[^/]+/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/[^/]+/profile/, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/[^/]+/$, role: IS_AUTHENTICATED_ANONYMOUSLY }
