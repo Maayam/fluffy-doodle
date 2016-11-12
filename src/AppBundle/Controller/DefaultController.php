@@ -10,8 +10,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 class DefaultController extends Controller
 {
     /**
-     * @Route("/", name="defaultPage", defaults={"_locale"="en"})
-     * @Route("/{_locale}/", name="defaultPageLoc", requirements={"_locale"="en|fr"})
+     * @Route("/", name="defaultPage")
      */
     public function indexAction(Request $request)
     {

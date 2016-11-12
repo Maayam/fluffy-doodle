@@ -23,50 +23,6 @@ use Symfony\Component\Form\Extension\Core\Type\HiddenType;
  */
 class UserController extends Controller
 {
-	/**
-	 * Create a new user from a register form
-	 *
-	 * @param $request The HTML request
-	 *
-	 * @Route("/signup", name="signup", defaults={"_locale"="en"})
-	 * @Route("/signup", name="signupLoc", requirements={"_locale"="en|fr"})
-	 */
-	public function postUser(Request $request){
-		$user = new User();
-		$form = $this->createForm(UserType::class, $user);
-
-		//handling the submit request
-		$form->handleRequest($request);
-		if ($form->isSubmitted() && $form->isValid()) {
-
-			$postUser = $form->getData();
-
-			$em = $this->getDoctrine()->getManager();
-
-			$plainPassword = $postUser->getPassword();
-			$encoder = $this->container->get('security.password_encoder');
-			$hashed = $encoder->encodePassword($postUser, $plainPassword);
-
-			$postUser->setPassword($hashed);
-
-			$em->persist($postUser);
-			$em->flush();
-
-			$this->addFlash(
-				'notice',
-				"l'utilisateur a bien été créé."
-			);
-
-			return $this->render('user/signupForm.html.twig', array(
-				'form' => $form->createView(),
-			));
-		} //end if fom submited
-		else{
-			return $this->render('user/signupForm.html.twig', array(
-				'form' => $form->createView(),
-			));
-		}
-	}
 
 	/**
 	 * Shows a user profile
@@ -75,8 +31,7 @@ class UserController extends Controller
 	 * @param $id The id of the user
 	 * @return The rendered page
 	 *
-	 * @Route("/user/{id}", requirements={"id" = "\d+"}, name="viewUser", defaults={"_locale"="en"})
-	 * @Route("/{_locale}/user/{id}", requirements={"id" = "\d+", "_locale"="en|fr"}, name="viewUserLoc")
+	 * @Route("/profile/{id}", requirements={"id" = "\d+"}, name="viewUser")
 	 * @Method({"GET"})
 	 */
 	public function showUser(Request $request, $id){
@@ -84,7 +39,7 @@ class UserController extends Controller
 		$user = $this->getUserById($id);
 		
 		if($user) {
-			return $this->render('page/userProfile.html.twig', array("user"=>$user));
+			return $this->render('FOSUserBundle:Profile:show.html.twig', array("user"=>$user));
 		} else {
 			throw $this->createNotFoundException('User not found');
 		}

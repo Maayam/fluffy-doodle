@@ -14,8 +14,6 @@ use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 class SecurityController extends Controller
 {
 	/**
-	 * @Route("/login", name="login", defaults={"_locale"="en"})
-	 * @Route("/{_locale}/login", name="loginLoc", requirements={"_locale"="en|fr"})
 	 */
 	public function loginAction(Request $request){
 	    $authenticationUtils = $this->get('security.authentication_utils');
@@ -40,8 +38,7 @@ class SecurityController extends Controller
 	// }
 
 	/**
-	* @Route("/logout", name="logout")
-	*/
+	 */
 	public function logoutAction(){
 		//logout
 

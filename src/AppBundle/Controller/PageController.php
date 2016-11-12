@@ -10,8 +10,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 class PageController extends Controller
 {
     /**
-     * @Route("/map", name="map", defaults={"_locale"="en"})
-     * @Route("/{_locale}/map", name="mapLoc", requirements={"_locale"="en|fr"})
+     * @Route("/map", name="map")
      */
     public function mapAction(Request $request)
     {
