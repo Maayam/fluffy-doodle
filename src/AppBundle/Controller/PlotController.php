@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Request;
 use AppBundle\Entity\Plot;
 use AppBundle\Entity\Tag;
 use AppBundle\Entity\Performance;
+use AppBundle\Form\PerformanceType;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
@@ -17,6 +18,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 /**
  * A class managing plots
@@ -188,34 +190,39 @@ class PlotController extends Controller
 	 * @Method({"POST", "GET"})
 	 */
 	public function markAsDancedAction(Request $request){
+		
 
-		$params = $request->request->all();
-
+		$params = $request->query->all();
 		$manager = $this->getDoctrine()->getManager();
-
 		//get Plot (may not be necessary)
 		$plotRepo = $manager->getRepository('AppBundle\Entity\Plot');
 		$plot = $plotRepo->findOneById($params['plotId']);
-
-		//get User
-		$userRepo = $manager->getRepository('AppBundle\Entity\user')->createQueryBuilder('u');
-		$user = $userRepo->select('u')
-					->where('u.username = :name')
+		$userRepo = $manager->getRepository('AppBundle\Entity\User');
+		$em = $this->getDoctrine()->getManager()->getRepository('AppBundle\Entity\User')->createQueryBuilder('u');
+		
+		$users = $em->select('u')
+					->where('u.username LIKE :name')
 					->setParameter('name', $params['username'])
 					->getQuery()
-					->getResult()[0];
+					->getResult();
+		$user = $users[0];
+		$perf = new Performance();
 
-		$user_id = $user->getId();
-		$plot_id = $plot->getId();
+		if(!$request->isXmlHttpRequest())
+			return;
+		$perf->setPlot($plot);
+		$perf->setPerformer($user);
 
-		$performance = new Performance();
-		$performance->setPerformer($user);
-		$performance->setPlot($plot);
+		//build the form
+		$perfForm = $this->createFormBuilder($perf)
+			->add('youtube', TextType::class )
+			->add('niconicoDouga', TextType::class )
+			->add('biribiri', TextType::class )
+			->getForm();
 
-		$manager->persist($performance);
-		$manager->flush();
-
-		return new JsonResponse(array('success' => true));
+		return $this->render('forms/performanceForm.html.twig', array(
+			'form' => $perfForm->createView(),
+		));
 	}
 
 	/**

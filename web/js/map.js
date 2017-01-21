@@ -27,24 +27,24 @@ function initmap() { //loads the map
 	}, "Locate me").addTo(map);
 
 	var states = [{
-					stateName: 'add-plot',
-					icon: 'glyphicon-map-marker',
-					title: 'Add plot',
-					onClick: function(control) {
-						addPlot = true;
-						control.state('remove-plot');
-					}
-				}, {
-					stateName: 'remove-plot',
-					icon: 'glyphicon-remove-sign',
-					onClick: function(control) {
-						if(marker) {
-							map.removeLayer(marker);
-						}
-						addPlot = false;
-						control.state('add-plot');
-					}
-				}
+		stateName: 'add-plot',
+		icon: 'glyphicon-map-marker',
+		title: 'Add plot',
+		onClick: function(control) {
+			addPlot = true;
+			control.state('remove-plot');
+		}
+	}, {
+		stateName: 'remove-plot',
+		icon: 'glyphicon-remove-sign',
+		onClick: function(control) {
+			if(marker) {
+				map.removeLayer(marker);
+			}
+			addPlot = false;
+			control.state('add-plot');
+		}
+	}
 	];
 
 	// Add button to add plots only if user is logged
@@ -70,10 +70,6 @@ function initmap() { //loads the map
 
 
 function askForPlots() {
-	// request the marker info with AJAX for the current bounds
-	var bounds=map.getBounds();
-	var minll=bounds.getSouthWest();
-	var maxll=bounds.getNorthEast();
 
 	var box = getBox();
 
@@ -89,7 +85,7 @@ function askForPlots() {
 		error: function(data, XMLHttpRequest, textStatus, errorThrown) {
 			throwAjaxError(XMLHttpRequest, textStatus, errorThrown);
 		}
-	}).done(function(plotList) { updateDots(plotList); });
+	}).done(function(plotList) { updatePlots(plotList); });
 }
 
 function getBox() {
@@ -104,7 +100,7 @@ function getBox() {
 			 'maxLng': maxll.lng };
 }
 
-function updateDots(plotList) {
+function updatePlots(plotList) {
 	removeMarkers();
 
 	for( i=0; i < plotList.length; i++ ) {
@@ -118,6 +114,7 @@ function updateDots(plotList) {
 
 		plotmark.data=plot;
 		map.addLayer(plotmark);
+		plotlayers.push(plotmark);
 
 		var popupOptions = {
 			maxWidth: "auto",
@@ -125,11 +122,11 @@ function updateDots(plotList) {
 		};
 
 		plotmark = plotmark.bindPopup(plot.html, popupOptions).update();
-		plotlayers.push(plotmark);
 	}
 }
 
-function removeMarkers() {
+function removeMarkers() { //remove Markers that are outside the view
+	var bounds = getBox();
 	for (i=0;i<plotlayers.length;i++) {
 		map.removeLayer(plotlayers[i]);
 	}
@@ -137,10 +134,6 @@ function removeMarkers() {
 }
 
 function onMapMove(e) { askForPlots(); }
-
-function initNav(){
-	searchPlotByName();
-}
 
 function searchPlotByName() {
 
@@ -159,7 +152,7 @@ function searchPlotByName() {
 			}
 		}).done(function(result) {
 			if(result.length > 0) {
-				updateDots(result);
+				updatePlots(result);
 			} else {
 				alert("No plot found.");
 			}
@@ -169,82 +162,83 @@ function searchPlotByName() {
 	});
 }
 
-function popFormOnClick(){
-	//this could probably be improved... probably...
-	map.on('click', function(e) {
+function popPlotForm(e){
+	//creates a new marker on click
+	if(marker){
+		//remove the previous marker first (if one)
+		map.removeLayer(marker);
+	}
+	marker = new L.Marker(e.latlng);
+	map.addLayer(marker); //insert marker
 
-		if(!addPlot)
-			return;
-
-		//creates a new marker on click
-		if(marker){
-			//remove the previous marker first (if one)
-			map.removeLayer(marker);
-		}
-		marker = new L.Marker(e.latlng);
-		map.addLayer(marker); //insert marker
-
-		//now, get the Form from server
-		var coords = {
-			'lat': e.latlng.lat,
-			'lng': e.latlng.lng
+	//now, get the Form from server
+	var coords = {
+		'lat': e.latlng.lat,
+		'lng': e.latlng.lng
+	};
+	$.ajax({
+		'url': 'plot/form',
+		'type': 'GET',
+		'data': coords,
+	}).done(function(data){
+		//when got the form, append it in the marker popup
+		var popupOptions = {
+			maxWidth: "auto",
+			autoPan: false //Disable panning, prevent the popup from closing when panning is done
 		};
-		$.ajax({
-			'url': 'plot/form',
-			'type': 'GET',
-			'data': coords,
-		}).done(function(data){
-			//when got the form, append it in the marker popup
-			var popupOptions = {
-				maxWidth: "auto",
-				autoPan: false //Disable panning, prevent the popup from closing
-							   //when panning is done
-			};
-			marker.bindPopup(data, popupOptions).openPopup();
+		marker.bindPopup(data, popupOptions).openPopup();
+		console.log(marker);
 
-			var newName, newNote; //I need those variables global
+		//when the form is submitted
+		$("form[name='form']").submit(function(e) {
+  		e.preventDefault(); //prevent the redirection
+			var data = new FormData($(this)[0]);
+			//close the form Popup and show a loading text instead
+			marker.getPopup().setContent("Loading...").update();
+  		//make the actual post request to the plotController
+			$.ajax({
+				url:"plot",
+				type:"POST",
+				data:data,
+				contentType: false,
+  				processData: false,
+  				cache:false,
+			}).done( function(data){
+				//if successful, put the newly added content into a new Popup
+				if(data.success){
+					l("plot form successfully submited: (map.js in popPlotForm()");
+					//display a nice notification instead of this...
 
-			//when the form is submitted
-			$("form[name='form']").submit(function(e) {
-    			e.preventDefault(); //prevent the redirection
+					marker.getPopup()
+					.setContent(data.html)
+					.update()
 
-				var data = new FormData($(this)[0]);
+					//vider la variable marker pour que le marker nouvellement créé ne se fasse pas écraser au prochain clique
+					marker = false;
+				}
+				else{
+					marker.getPopup()
+					.setContent("Sorry... Form Submission Failed").update();
+				}
+			}); //end post Request
+		}); //end form Submit
+	}); //end getForm
+} //end popPlotForm()
 
-				//close the form Popup and show a loading text instead
-				marker.getPopup().setContent("Loading...").update();
-
-    			//make the actual post request to the plotController
-				$.ajax({
-					url:"plot",
-					type:"POST",
-					data:data,
-					contentType: false,
-    				processData: false,
-    				cache:false,
-				}).done( function(data){
-					//if successful, put the newly added content into a new Popup
-					if(data.success){
-						l("plot form successfully submited: (map.js in popFormOnClick()");
-						//display a nice notification instead of this...
-
-						marker.getPopup()
-						.setContent(data.html)
-						.update()
-
-						//vider la variable marker pour que le marker nouvellement créé ne se fasse pas écraser au prochain clique
-						marker = false;
-					}
-					else{
-						marker.getPopup()
-						.setContent("Sorry... Form Submission Failed").update();
-					}
-				}); //end post Request
-			}); //end form Submit
-		}); //end getForm
-	}); //end onMapClick
-} //end popFormOnClick()
 initmap();
-popFormOnClick();
-initNav();
+
+map.on('click', function(e) {
+	if(addPlot){
+		l('popped');
+		popPlotForm(e);
+	}
+	else{
+		l('not popped');
+	}
+});
+
+function markAsDanced(){
+	l('lel');
+}
 
 });

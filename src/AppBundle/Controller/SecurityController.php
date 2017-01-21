@@ -10,6 +10,7 @@ use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 class SecurityController extends Controller
 {
@@ -24,6 +25,9 @@ class SecurityController extends Controller
 	    // last username entered by the user
 	    $lastUsername = $authenticationUtils->getLastUsername();
 
+			$session = new Session();
+			$session->start();
+			$session->set('username', $lastUsername);
 	    return $this->render('security/login.html.twig', array(
 	        'last_username' => $lastUsername,
 	        'error'         => $error,
@@ -41,6 +45,8 @@ class SecurityController extends Controller
 	 */
 	public function logoutAction(){
 		//logout
-
+		$session = new Session();
+		$session->start();
+		$session->clear();
 	}
 }
