@@ -51,6 +51,7 @@ class PerformanceController extends Controller
 
 		//build the form
 		$form = $this->createFormBuilder($perf)
+			->add('name', TextType::class )
 			->add('youtube', TextType::class )
 			->add('niconicoDouga', TextType::class )
 			->add('biribiri', TextType::class )

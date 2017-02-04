@@ -252,28 +252,4 @@ class Performance
     {
         return $this->dateAdded;
     }
-
-    /**
-     * Set name
-     *
-     * @param string $name
-     *
-     * @return Performance
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
-    /**
-     * Get name
-     *
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
 }

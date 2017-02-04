@@ -19,6 +19,8 @@ use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Component\Validator\Constraints\DateTime;
 
 /**
  * A class managing plots
@@ -190,8 +192,6 @@ class PlotController extends Controller
 	 * @Method({"POST", "GET"})
 	 */
 	public function markAsDancedAction(Request $request){
-		
-
 		$params = $request->query->all();
 		$manager = $this->getDoctrine()->getManager();
 		//get Plot (may not be necessary)
@@ -215,6 +215,7 @@ class PlotController extends Controller
 
 		//build the form
 		$perfForm = $this->createFormBuilder($perf)
+			->add('name', TextType::class )
 			->add('youtube', TextType::class )
 			->add('niconicoDouga', TextType::class )
 			->add('biribiri', TextType::class )
