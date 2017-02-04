@@ -65,6 +65,7 @@ class PerformanceController extends Controller
 			$perf = $form->getData();
 			$perf->setPlot($plot);
 			$perf->setPerformer($user);
+			$perf->setDateAdded(new \DateTime(date("Y-m-d H:i:s")));
 			$em->persist($perf);
 			$em->flush(); //just like in debug_testCreateAction
 			return new JsonResponse(true);
